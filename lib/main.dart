@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'ddwrt.dart';
+import 'settings_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context) => MyHomePage(title: 'Router Remote 2'),
+        '/settings': (context) => SettingsScreen(),
       },
       initialRoute: '/',
     );
@@ -35,6 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => Navigator.pushNamed(context, '/settings'),
+          )
+        ],
       ),
       body: Center(
         child: Column(
