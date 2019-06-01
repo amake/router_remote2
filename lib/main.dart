@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'app_settings.dart';
 import 'ddwrt.dart';
 import 'settings_screen.dart';
 
@@ -51,7 +53,11 @@ class _MyHomePageState extends State<MyHomePage> {
             RaisedButton(
               child: Text('Go'),
               onPressed: () async {
-                final result = await DdWrt().statusOpenVpn(_host, _user, _pass);
+                final prefs = await SharedPreferences.getInstance();
+                final host = prefs.get(AppSettings.host);
+                final user = prefs.get(AppSettings.username);
+                final pass = prefs.get(AppSettings.password);
+                final result = await DdWrt().statusOpenVpn(host, user, pass);
                 debugPrint(result.body);
               },
             )
@@ -61,8 +67,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-// Temporary
-const _host = 'host';
-const _user = 'user';
-const _pass = 'pass';
