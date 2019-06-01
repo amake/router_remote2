@@ -12,7 +12,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Router Remote 2'),
+      routes: {
+        '/': (context) => MyHomePage(title: 'Router Remote 2'),
+      },
+      initialRoute: '/',
     );
   }
 }
