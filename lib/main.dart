@@ -1,11 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:router_remote2/app_routes.dart';
-import 'package:router_remote2/app_settings.dart';
-import 'package:router_remote2/ddwrt.dart';
 import 'package:router_remote2/debug.dart';
+import 'package:router_remote2/required_settings.dart';
 import 'package:router_remote2/settings_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:router_remote2/vpn_control_page.dart';
 
 void main() {
   BlocSupervisor.delegate = DebugBlocDelegate();
@@ -16,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Router Remote 2',
+      title: 'Router Remote',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       routes: {
-        AppRoutes.home: (context) => MyHomePage(title: 'Router Remote 2'),
+        AppRoutes.home: (context) => AppScaffold(body: VpnControlPage()),
         AppRoutes.settings: (context) => SettingsScreen(),
       },
       initialRoute: AppRoutes.home,
@@ -29,21 +28,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class AppScaffold extends StatelessWidget {
+  final Widget body;
 
-  final String title;
+  AppScaffold({@required this.body}) : assert(body != null);
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Router Remote'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),
@@ -51,24 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: Text('Go'),
-              onPressed: () async {
-                final prefs = await SharedPreferences.getInstance();
-                final host = prefs.get(AppSettings.host);
-                final user = prefs.get(AppSettings.username);
-                final pass = prefs.get(AppSettings.password);
-                final result = await DdWrt().statusOpenVpn(host, user, pass);
-                debugPrint(result.body);
-              },
-            )
-          ],
-        ),
-      ),
+      body: RequiredSettings(child: body),
     );
   }
 }
