@@ -101,6 +101,20 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   @override
   VpnControlState get initialState => VpnControlState.unknown;
 
+  bool get canRefresh {
+    switch (currentState) {
+      case VpnControlState.on:
+      case VpnControlState.off:
+      case VpnControlState.unknown:
+      case VpnControlState.error:
+        return true;
+      case VpnControlState.disallowed:
+      case VpnControlState.querying:
+        return false;
+    }
+    throw Exception('Unknown state: $currentState');
+  }
+
   @override
   Stream<VpnControlState> mapEventToState(VpnControlEvent event) async* {
     if (event is WifiChanged) {
@@ -134,17 +148,9 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
         yield toggledResult;
       }
     } else if (event is VpnRefresh) {
-      switch (currentState) {
-        case VpnControlState.on:
-        case VpnControlState.off:
-        case VpnControlState.unknown:
-        case VpnControlState.error:
-          yield VpnControlState.querying;
-          yield await _queryHost();
-          break;
-        case VpnControlState.disallowed:
-        case VpnControlState.querying:
-          break;
+      if (canRefresh) {
+        yield VpnControlState.querying;
+        yield await _queryHost();
       }
     }
   }
