@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,6 +46,32 @@ class _VpnControlPageState extends State<VpnControlPage>
     }
   }
 
+  Future<void> _refresh() async {
+    if (!_vpnControlBloc.canRefresh) {
+      return null;
+    }
+    final completer = Completer<void>();
+    var queried = false;
+    StreamSubscription subscription;
+
+    void onData(VpnControlState state) {
+      switch (state) {
+        case VpnControlState.querying:
+          queried = true;
+          break;
+        default:
+          if (queried) {
+            completer.complete();
+            subscription.cancel();
+          }
+      }
+    }
+
+    subscription = _vpnControlBloc.state.listen(onData);
+    _vpnControlBloc.dispatch(VpnRefresh());
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
@@ -60,8 +88,7 @@ class _VpnControlPageState extends State<VpnControlPage>
               builder: (context, VpnControlState vpnState) {
                 return Center(
                   child: SingleChildRefreshIndicator(
-                    onRefresh: () async =>
-                        _vpnControlBloc.dispatch(VpnRefresh()),
+                    onRefresh: _refresh,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Column(
