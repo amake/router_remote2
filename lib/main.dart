@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:router_remote2/app_routes.dart';
 import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/ddwrt.dart';
 import 'package:router_remote2/settings_screen.dart';
@@ -15,10 +16,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        '/': (context) => MyHomePage(title: 'Router Remote 2'),
-        '/settings': (context) => SettingsScreen(),
+        AppRoutes.home: (context) => MyHomePage(title: 'Router Remote 2'),
+        AppRoutes.settings: (context) => SettingsScreen(),
       },
-      initialRoute: '/',
+      initialRoute: AppRoutes.home,
     );
   }
 }
@@ -41,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.pushNamed(context, '/settings'),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
           )
         ],
       ),
