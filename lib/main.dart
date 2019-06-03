@@ -1,11 +1,16 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:router_remote2/app_routes.dart';
 import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/ddwrt.dart';
+import 'package:router_remote2/debug.dart';
 import 'package:router_remote2/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  BlocSupervisor.delegate = DebugBlocDelegate();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
