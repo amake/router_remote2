@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:router_remote2/app_settings.dart';
+import 'package:router_remote2/ddwrt.dart';
+import 'package:router_remote2/settings_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'app_settings.dart';
-import 'ddwrt.dart';
-import 'settings_screen.dart';
 
 void main() => runApp(MyApp());
 
