@@ -94,9 +94,17 @@ class _VpnControlPageState extends State<VpnControlPage>
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            _message(vpnState),
-                            textAlign: TextAlign.center,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              _statusIcon(vpnState),
+                              const SizedBox(width: 8),
+                              Text(
+                                _message(vpnState),
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.title,
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 16),
                           RaisedButton(
@@ -113,6 +121,23 @@ class _VpnControlPageState extends State<VpnControlPage>
         }
       },
     );
+  }
+
+  Widget _statusIcon(VpnControlState currentState) {
+    switch (currentState) {
+      case VpnControlState.on:
+        return const Icon(Icons.lock_outline);
+      case VpnControlState.off:
+        return const Icon(Icons.lock_open);
+      case VpnControlState.querying:
+        return const Icon(Icons.refresh);
+      case VpnControlState.disallowed:
+        return const Icon(Icons.not_interested);
+      case VpnControlState.error:
+        return const Icon(Icons.error);
+      default:
+        return Container();
+    }
   }
 
   String _message(VpnControlState currentState) {
