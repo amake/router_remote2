@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:router_remote2/app_routes.dart';
 import 'package:router_remote2/app_settings.dart';
+import 'package:router_remote2/common_widgets.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
 
 class RequiredSettings extends StatefulWidget {
@@ -62,10 +63,11 @@ class SettingsRequiredPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text('Some required setings have not been input yet'),
-            SizedBox(height: 16),
+            const MainMessageText(
+                'Some required setings have not been input yet'),
+            const SizedBox(height: 16),
             RaisedButton(
-              child: Text('Open Settings'),
+              child: Text('Open Settings'.toUpperCase()),
               onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
             )
           ],

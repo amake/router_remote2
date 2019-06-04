@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:router_remote2/common_widgets.dart';
 import 'package:router_remote2/connectivity_bloc.dart';
 import 'package:router_remote2/location_permissions_page.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
@@ -99,11 +100,7 @@ class _VpnControlPageState extends State<VpnControlPage>
                             children: <Widget>[
                               _statusIcon(vpnState),
                               const SizedBox(width: 8),
-                              Text(
-                                _message(vpnState),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.title,
-                              ),
+                              MainMessageText(_message(vpnState)),
                             ],
                           ),
                           const SizedBox(height: 16),

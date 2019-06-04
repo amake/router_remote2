@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:router_remote2/common_widgets.dart';
 import 'package:router_remote2/location_permissions_bloc.dart';
 
 class LocationPermissionsPage extends StatefulWidget {
@@ -50,13 +51,11 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text(
-                  'This app requires location permissions in order to restrict the Wi-Fi SSID',
-                  textAlign: TextAlign.center,
-                ),
+                const MainMessageText(
+                    'This app requires location permissions in order to restrict the Wi-Fi SSID'),
                 const SizedBox(height: 16),
                 RaisedButton(
-                  child: _buttonTitle(currentState),
+                  child: Text(_buttonTitle(currentState).toUpperCase()),
                   onPressed: _buttonAction(currentState),
                 )
               ],
@@ -67,16 +66,16 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
     );
   }
 
-  Widget _buttonTitle(LocationPermissionsState currentState) {
+  String _buttonTitle(LocationPermissionsState currentState) {
     switch (currentState) {
       case LocationPermissionsState.granted:
-        return const Text('Already Granted');
+        return 'Already Granted';
       case LocationPermissionsState.querying: // fallthrough
       case LocationPermissionsState.unknown:
-        return const Text('Grant Permission');
+        return 'Grant Permission';
       case LocationPermissionsState.denied: // fallthrough
       case LocationPermissionsState.pending:
-        return const Text('Go to Settings app');
+        return 'Go to Settings app';
     }
     throw Exception('Unknown state: $currentState');
   }
