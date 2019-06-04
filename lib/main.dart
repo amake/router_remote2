@@ -17,7 +17,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Router Remote',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.deepOrangeAccent,
+        brightness: Brightness.dark,
       ),
       routes: {
         AppRoutes.home: (context) => AppScaffold(body: VpnControlPage()),
