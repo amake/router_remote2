@@ -108,7 +108,7 @@ class _VpnControlPageState extends State<VpnControlPage>
                           ),
                           const SizedBox(height: 16),
                           RaisedButton(
-                            child: _onOffLabel(vpnState),
+                            child: Text(_onOffLabel(vpnState).toUpperCase()),
                             onPressed: _onOffAction(vpnState),
                           ),
                         ],
@@ -157,20 +157,20 @@ class _VpnControlPageState extends State<VpnControlPage>
     }
   }
 
-  Widget _onOffLabel(VpnControlState currentState) {
+  String _onOffLabel(VpnControlState currentState) {
     switch (currentState) {
       case VpnControlState.on:
-        return const Text('VPN OFF');
+        return 'Turn VPN Off';
       case VpnControlState.off:
-        return const Text('VPN ON');
+        return 'Turn VPN ON';
       case VpnControlState.querying:
-        return const Text('Please Wait');
+        return 'Please Wait';
       case VpnControlState.disallowed:
-        return const Text('Disallowed');
+        return 'Disallowed';
       case VpnControlState.error:
-        return const Text('Error');
+        return 'Error';
       default:
-        return const Text('?');
+        return '?';
     }
   }
 
