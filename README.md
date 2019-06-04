@@ -1,16 +1,23 @@
-# router_remote2
+# Router Remote 2
 
-A new Flutter project.
+This is an extremely simple remote control app for DD-WRT routers. Currently all
+it does is toggle on and off the OpenVPN client.
 
-## Getting Started
+It is a Flutter port of the original [Router
+Remote](https://github.com/amake/RouterRemote/). It runs on both Android and
+iOS.
 
-This project is a starting point for a Flutter application.
+# How To Use
 
-A few resources to get you started if this is your first Flutter project:
+1. Tap the Settings button in the upper right
+   1. Set the username and password you use to log in to your router's control
+      panel
+       - Note: Only BASIC authentication is supported; these credentials will be
+         sent as plain text!
+   2. Set the host for the router, e.g. 192.168.1.1
+2. Go back to the main screen. The VPN on/off button should now work (assuming
+   you have set up the router's OpenVPN client)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+# License
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+Apache 2.0
