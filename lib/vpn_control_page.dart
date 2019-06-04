@@ -97,10 +97,12 @@ class _VpnControlPageState extends State<VpnControlPage>
                         children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               _statusIcon(vpnState),
                               const SizedBox(width: 8),
-                              MainMessageText(_message(vpnState)),
+                              Flexible(
+                                  child: MainMessageText(_message(vpnState))),
                             ],
                           ),
                           const SizedBox(height: 16),
