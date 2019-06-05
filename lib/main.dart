@@ -5,6 +5,7 @@ import 'package:router_remote2/debug.dart';
 import 'package:router_remote2/required_settings.dart';
 import 'package:router_remote2/settings_screen.dart';
 import 'package:router_remote2/vpn_control_page.dart';
+import 'package:router_remote2/wifi_connection.dart';
 
 void main() {
   BlocSupervisor.delegate = DebugBlocDelegate();
@@ -22,7 +23,8 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
       ),
       routes: {
-        AppRoutes.home: (context) => AppScaffold(body: VpnControlPage()),
+        AppRoutes.home: (context) =>
+            AppScaffold(body: WifiConnection(child: VpnControlPage())),
         AppRoutes.settings: (context) => SettingsScreen(),
       },
       initialRoute: AppRoutes.home,

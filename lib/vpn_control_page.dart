@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:router_remote2/common_widgets.dart';
-import 'package:router_remote2/connectivity_bloc.dart';
-import 'package:router_remote2/location_permissions_page.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
 import 'package:router_remote2/vpn_control_bloc.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
@@ -17,24 +15,20 @@ class VpnControlPage extends StatefulWidget {
 
 class _VpnControlPageState extends State<VpnControlPage>
     with WidgetsBindingObserver {
-  ConnectivityBloc _connectivityBloc;
-  WifiAccessBloc _wifiAccessBloc;
   VpnControlBloc _vpnControlBloc;
 
   @override
   void initState() {
-    _connectivityBloc = ConnectivityBloc();
-    _wifiAccessBloc = WifiAccessBloc(_connectivityBloc);
     _vpnControlBloc = VpnControlBloc(
-        _wifiAccessBloc, BlocProvider.of<SharedPreferencesBloc>(context));
+      BlocProvider.of<WifiAccessBloc>(context),
+      BlocProvider.of<SharedPreferencesBloc>(context),
+    );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _connectivityBloc.dispose();
-    _wifiAccessBloc.dispose();
     _vpnControlBloc.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -76,48 +70,35 @@ class _VpnControlPageState extends State<VpnControlPage>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: _wifiAccessBloc,
-      builder: (context, WifiAccessState currentState) {
-        switch (currentState.status) {
-          case WifiAccessStatus.insufficientPermissions:
-            return LocationPermissionsPage(
-                onGranted: () => _connectivityBloc
-                    .dispatch(ConnectivityPermissionsChanged()));
-          default:
-            return BlocBuilder(
-              bloc: _vpnControlBloc,
-              builder: (context, VpnControlState vpnState) {
-                return Center(
-                  child: SingleChildRefreshIndicator(
-                    onRefresh: _refresh,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              _statusIcon(vpnState),
-                              const SizedBox(width: 8),
-                              Flexible(
-                                  child: MainMessageText(_message(vpnState))),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          RaisedButton(
-                            child: Text(_onOffLabel(vpnState).toUpperCase()),
-                            onPressed: _onOffAction(vpnState),
-                          ),
-                        ],
-                      ),
-                    ),
+      bloc: _vpnControlBloc,
+      builder: (context, VpnControlState vpnState) {
+        return Center(
+          child: SingleChildRefreshIndicator(
+            onRefresh: _refresh,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _statusIcon(vpnState),
+                      const SizedBox(width: 8),
+                      Flexible(child: MainMessageText(_message(vpnState))),
+                    ],
                   ),
-                );
-              },
-            );
-        }
+                  const SizedBox(height: 16),
+                  RaisedButton(
+                    child: Text(_onOffLabel(vpnState).toUpperCase()),
+                    onPressed: _onOffAction(vpnState),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -148,7 +129,11 @@ class _VpnControlPageState extends State<VpnControlPage>
       case VpnControlState.querying:
         return 'Checking...';
       case VpnControlState.disallowed:
-        return 'Wi-Fi network "${_wifiAccessBloc.currentState.connectivity.wifiName}" is not allowed';
+        final networkName = BlocProvider.of<WifiAccessBloc>(context)
+            .currentState
+            .connectivity
+            .wifiName;
+        return 'Wi-Fi network “$networkName” is not allowed';
       case VpnControlState.error:
         return 'An error has occurred';
       default:
