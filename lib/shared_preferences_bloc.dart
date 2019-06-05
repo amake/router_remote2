@@ -49,7 +49,7 @@ class SharedPreferencesState<T> extends Equatable {
   }
 
   bool get isComplete =>
-      data.isNotEmpty && requiredKeys.every((key) => data.containsKey(key));
+      data.isNotEmpty && requiredKeys.every(data.containsKey);
 }
 
 class SharedPreferencesBloc
