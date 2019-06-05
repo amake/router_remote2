@@ -70,8 +70,10 @@ class StringPrefItem extends StatefulWidget {
   final Widget title;
   final String prefsKey;
   final bool obscureText;
+  final bool allowEmpty;
 
-  const StringPrefItem(this.prefsKey, {this.title, this.obscureText = false});
+  const StringPrefItem(this.prefsKey,
+      {this.title, this.obscureText = false, this.allowEmpty = false});
 
   @override
   _StringPrefItemState createState() => _StringPrefItemState();
@@ -109,8 +111,8 @@ class _StringPrefItemState extends State<StringPrefItem> {
       title: widget.title,
       subtitle: TextField(
         controller: _controller,
-        onChanged: (newValue) =>
-            SharedPreferencesStream().add(widget.prefsKey, newValue),
+        onChanged: (newValue) => SharedPreferencesStream().add(widget.prefsKey,
+            newValue.isEmpty && !widget.allowEmpty ? null : newValue),
         obscureText: widget.obscureText,
       ),
     );
