@@ -17,14 +17,14 @@ class SharedPreferencesStream {
     return prefs.get(key);
   }
 
-  Future<bool> _put(String key, Object value) async {
+  Future<bool> _put<T>(String key, Object value) async {
     final prefs = await SharedPreferences.getInstance();
-    if (value is String) {
+    if (T == String) {
       return prefs.setString(key, value);
-    } else if (value is bool) {
+    } else if (T == bool) {
       return prefs.setBool(key, value);
     }
-    throw Exception('Unsupported value type: ${value.runtimeType}');
+    throw Exception('Unsupported value type: $T');
   }
 
   Stream<T> streamForKey<T>(String key) {
@@ -51,12 +51,12 @@ class SharedPreferencesStream {
         StreamController(onListen: onListen, onCancel: onCancel);
   }
 
-  Future<void> add(String key, Object value) async {
+  Future<void> add<T>(String key, T value) async {
     if (_controllers.containsKey(key)) {
       for (final controller in _controllers[key]) {
         controller.add(value);
       }
     }
-    await _put(key, value);
+    await _put<T>(key, value);
   }
 }
