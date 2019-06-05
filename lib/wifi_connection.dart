@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:router_remote2/common_widgets.dart';
 import 'package:router_remote2/connectivity_bloc.dart';
 import 'package:router_remote2/location_permissions_page.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
@@ -41,6 +42,8 @@ class _WifiConnectionState extends State<WifiConnection> {
             return LocationPermissionsPage(
                 onGranted: () => _connectivityBloc
                     .dispatch(ConnectivityPermissionsChanged()));
+          case WifiAccessStatus.disconnected:
+            return const NoConnectionPage();
           default:
             return BlocProvider(
               bloc: _connectivityBloc,
@@ -51,6 +54,20 @@ class _WifiConnectionState extends State<WifiConnection> {
             );
         }
       },
+    );
+  }
+}
+
+class NoConnectionPage extends StatelessWidget {
+  const NoConnectionPage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: const MainMessageText('Please connect to Wi-Fi'),
+      ),
     );
   }
 }
