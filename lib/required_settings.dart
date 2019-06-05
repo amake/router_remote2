@@ -42,7 +42,7 @@ class _RequiredSettingsState extends State<RequiredSettings> {
       bloc: _sharedPreferencesBloc,
       builder: (context, SharedPreferencesState currentState) {
         if (!currentState.isComplete) {
-          return SettingsRequiredPage();
+          return const SettingsRequiredPage();
         } else {
           return BlocProvider(
             bloc: _sharedPreferencesBloc,
@@ -55,6 +55,8 @@ class _RequiredSettingsState extends State<RequiredSettings> {
 }
 
 class SettingsRequiredPage extends StatelessWidget {
+  const SettingsRequiredPage();
+
   @override
   Widget build(BuildContext context) {
     return Center(
