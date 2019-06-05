@@ -49,7 +49,9 @@ class AppScaffold extends StatelessWidget {
           )
         ],
       ),
-      body: RequiredSettings(child: body),
+      body: SafeArea(
+        child: RequiredSettings(child: body),
+      ),
     );
   }
 }
