@@ -7,18 +7,14 @@ class SharedPreferencesStream {
 
   SharedPreferencesStream._();
 
-  factory SharedPreferencesStream() {
-    if (_instance == null) {
-      _instance = SharedPreferencesStream._();
-    }
-    return _instance;
-  }
+  factory SharedPreferencesStream() =>
+      _instance ??= SharedPreferencesStream._();
 
   final _controllers = <String, Set<StreamController>>{};
 
   Future<T> _get<T>(String key) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.get(key) as T;
+    return prefs.get(key);
   }
 
   Future<bool> _put(String key, Object value) async {
@@ -41,7 +37,7 @@ class SharedPreferencesStream {
   StreamController<T> _newController<T>(String key) {
     StreamController<T> controller;
 
-    void onListen() async {
+    Future<void> onListen() async {
       final value = await _get<T>(key);
       controller.add(value);
     }
@@ -51,17 +47,16 @@ class SharedPreferencesStream {
       controller.close();
     }
 
-    controller = StreamController(onListen: onListen, onCancel: onCancel);
-
-    return controller;
+    return controller =
+        StreamController(onListen: onListen, onCancel: onCancel);
   }
 
-  void add(String key, value) async {
+  Future<void> add(String key, Object value) async {
     if (_controllers.containsKey(key)) {
       for (final controller in _controllers[key]) {
         controller.add(value);
       }
     }
-    _put(key, value);
+    await _put(key, value);
   }
 }

@@ -1,7 +1,7 @@
 class AppSettings {
-  static const username = 'username';
-  static const password = 'password';
-  static const host = 'host';
-  static const allowedWifiPattern = 'allowedWifiPattern';
-  static const dryRun = 'dryRun';
+  static const String username = 'username';
+  static const String password = 'password';
+  static const String host = 'host';
+  static const String allowedWifiPattern = 'allowedWifiPattern';
+  static const String dryRun = 'dryRun';
 }

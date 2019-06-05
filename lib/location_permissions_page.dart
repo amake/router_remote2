@@ -8,7 +8,7 @@ import 'package:router_remote2/location_permissions_bloc.dart';
 class LocationPermissionsPage extends StatefulWidget {
   final Function onGranted;
 
-  LocationPermissionsPage({this.onGranted});
+  const LocationPermissionsPage({this.onGranted});
 
   @override
   _LocationPermissionsPageState createState() =>
@@ -16,7 +16,9 @@ class LocationPermissionsPage extends StatefulWidget {
 }
 
 class _LocationPermissionsPageState extends State<LocationPermissionsPage>
-    with WidgetsBindingObserver {
+    with
+        // ignore: prefer_mixin
+        WidgetsBindingObserver {
   LocationPermissionsBloc _bloc;
 
   @override

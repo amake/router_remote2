@@ -26,7 +26,8 @@ class LocationPermissionsBloc
         yield LocationPermissionsState.querying;
         final status = await LocationPermissions().checkPermissionStatus();
         final nextState = _nextState(status);
-        // Result is `denied` on first run on Android, so for init return `unknown`
+        // Result is `denied` on first run on Android
+        // so for init return `unknown`
         if (nextState == LocationPermissionsState.granted) {
           yield nextState;
           onGranted();
@@ -55,7 +56,7 @@ class LocationPermissionsBloc
         break;
       case LocationPermissionsEvent.goToSettings:
         yield LocationPermissionsState.pending;
-        LocationPermissions().openAppSettings();
+        await LocationPermissions().openAppSettings();
         break;
     }
   }

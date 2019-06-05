@@ -7,12 +7,7 @@ class DdWrt {
 
   DdWrt._();
 
-  factory DdWrt() {
-    if (_instance == null) {
-      _instance = DdWrt._();
-    }
-    return _instance;
-  }
+  factory DdWrt() => _instance ??= DdWrt._();
 
   Future<http.Response> statusOpenVpn(
     String host,
@@ -27,7 +22,7 @@ class DdWrt {
     String host,
     String user,
     String pass,
-    bool enabled,
+    bool enabled, // ignore: avoid_positional_boolean_parameters
   ) {
     final value = enabled ? 1 : 0;
     return applyUser(host, user, pass, {

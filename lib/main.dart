@@ -41,7 +41,7 @@ class AppScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Router Remote'),
+        title: const Text('Router Remote'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.settings),

@@ -21,14 +21,14 @@ class SharedPreferenceUpdated extends SharedPreferencesEvent {
   SharedPreferenceUpdated(this.key, this.value) : super([key, value]);
 }
 
-class SharedPreferencesState<T> extends Equatable {
+class SharedPreferencesState extends Equatable {
   final Map<String, Object> data;
   final Set<String> requiredKeys;
 
   SharedPreferencesState(this.data, this.requiredKeys)
       : super([data, requiredKeys]);
 
-  T get<T>(String key) => data[key] as T;
+  T get<T>(String key) => data[key];
 
   T getOrDefault<T>(String key, T defaultValue) =>
       data.containsKey(key) ? data[key] : defaultValue;
@@ -80,7 +80,8 @@ class SharedPreferencesBloc
   }
 
   @override
-  SharedPreferencesState get initialState => SharedPreferencesState({}, Set());
+  SharedPreferencesState get initialState =>
+      SharedPreferencesState({}, <String>{});
 
   @override
   Stream<SharedPreferencesState> mapEventToState(

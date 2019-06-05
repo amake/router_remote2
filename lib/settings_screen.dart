@@ -15,28 +15,28 @@ class SettingsScreen extends StatelessWidget {
         leading: const BackButton(),
       ),
       body: ListView(
-        children: <Widget>[
-          const SectionHeader('Server'),
-          const StringPrefItem(
+        children: const <Widget>[
+          SectionHeader('Server'),
+          StringPrefItem(
             AppSettings.username,
             title: Text('Username'),
           ),
-          const StringPrefItem(
+          StringPrefItem(
             AppSettings.password,
             title: Text('Password'),
             obscureText: true,
           ),
-          const StringPrefItem(
+          StringPrefItem(
             AppSettings.host,
             title: Text('Host'),
           ),
-          const SectionHeader('Advanced'),
-          const StringPrefItem(
+          SectionHeader('Advanced'),
+          StringPrefItem(
             AppSettings.allowedWifiPattern,
             title: Text('Allowed network SSIDs (regex)'),
           ),
-          const SectionHeader('Debug'),
-          const BoolPrefItem(
+          SectionHeader('Debug'),
+          BoolPrefItem(
             AppSettings.dryRun,
             title: Text('Dry Run'),
           ),

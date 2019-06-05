@@ -21,8 +21,7 @@ class _RequiredSettingsState extends State<RequiredSettings> {
 
   @override
   void initState() {
-    _sharedPreferencesBloc = SharedPreferencesBloc();
-    _sharedPreferencesBloc
+    _sharedPreferencesBloc = SharedPreferencesBloc()
       ..require<String>(AppSettings.host)
       ..require<String>(AppSettings.username)
       ..require<String>(AppSettings.password)

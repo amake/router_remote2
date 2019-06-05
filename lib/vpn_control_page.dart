@@ -14,7 +14,9 @@ class VpnControlPage extends StatefulWidget {
 }
 
 class _VpnControlPageState extends State<VpnControlPage>
-    with WidgetsBindingObserver {
+    with
+        // ignore: prefer_mixin
+        WidgetsBindingObserver {
   VpnControlBloc _vpnControlBloc;
 
   @override
@@ -43,7 +45,7 @@ class _VpnControlPageState extends State<VpnControlPage>
 
   Future<void> _refresh() async {
     if (!_vpnControlBloc.canRefresh) {
-      return null;
+      return Future.value(null);
     }
     final completer = Completer<void>();
     var queried = false;
@@ -184,7 +186,7 @@ class SingleChildRefreshIndicator extends StatelessWidget {
         return RefreshIndicator(
           onRefresh: onRefresh,
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Container(
               width: constraints.maxWidth,
               height: constraints.maxHeight,

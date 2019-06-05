@@ -37,19 +37,17 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   FutureOr<T> _withConnectionSettings<T>(
-      FutureOr<T> f(String host, String username, String password)) async {
-    final hst =
-        sharedPreferencesBloc.currentState.get<String>(AppSettings.host);
-    final user =
-        sharedPreferencesBloc.currentState.get<String>(AppSettings.username);
-    final pass =
-        sharedPreferencesBloc.currentState.get<String>(AppSettings.password);
-    return f(hst, user, pass);
+    FutureOr<T> Function(String host, String username, String password) func,
+  ) async {
+    final prefsState = sharedPreferencesBloc.currentState;
+    final hst = prefsState.get<String>(AppSettings.host);
+    final user = prefsState.get<String>(AppSettings.username);
+    final pass = prefsState.get<String>(AppSettings.password);
+    return func(hst, user, pass);
   }
 
   Future<VpnControlState> _queryHost() async {
-    final response = await _withConnectionSettings(
-        (host, user, pass) => DdWrt().statusOpenVpn(host, user, pass));
+    final response = await _withConnectionSettings(DdWrt().statusOpenVpn);
     if (response?.statusCode != 200) {
       return VpnControlState.error;
     }
@@ -81,7 +79,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     int retries = 5,
   ]) async* {
     yield VpnControlState.querying;
-    var status;
+    VpnControlState status;
     for (var i = 0; i < retries; i++) {
       sleep(delay);
       status = await _queryHost();

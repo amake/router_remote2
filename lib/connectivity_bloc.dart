@@ -50,7 +50,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     _init();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     dispatch(ConnectivityUpdated(
       connectivity: await Connectivity().checkConnectivity(),
       wifiName: await Connectivity().getWifiName(),
@@ -58,7 +58,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     ));
   }
 
-  void _onConnectivityChanged(ConnectivityResult result) async {
+  Future<void> _onConnectivityChanged(ConnectivityResult result) async {
     dispatch(ConnectivityUpdated(
       connectivity: result,
       // Fetch Wi-Fi name here as well in case the network changed
