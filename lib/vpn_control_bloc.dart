@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart' as http;
 import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/ddwrt.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
@@ -47,7 +48,12 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   Future<VpnControlState> _queryHost() async {
-    final response = await _withConnectionSettings(DdWrt().statusOpenVpn);
+    http.Response response;
+    try {
+      response = await _withConnectionSettings(DdWrt().statusOpenVpn);
+    } on Exception {
+      return VpnControlState.error;
+    }
     if (response?.statusCode != 200) {
       return VpnControlState.error;
     }
@@ -64,8 +70,13 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     if (dryRun) {
       return VpnControlState.unknown;
     }
-    final response = await _withConnectionSettings(
-        (host, user, pass) => DdWrt().toggleVpn(host, user, pass, enabled));
+    http.Response response;
+    try {
+      response = await _withConnectionSettings(
+          (host, user, pass) => DdWrt().toggleVpn(host, user, pass, enabled));
+    } on Exception {
+      return VpnControlState.error;
+    }
     if (response?.statusCode != 200) {
       return VpnControlState.error;
     } else {
