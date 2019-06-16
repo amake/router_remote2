@@ -14,7 +14,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.1"
+    version: "0.14.2"
   boolean_selector:
     dependency: transitive
     description:
@@ -94,7 +94,7 @@ packages:
       name: location_permissions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   matcher:
     dependency: transitive
     description:
@@ -143,7 +143,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.3"
+    version: "0.5.3+1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -207,4 +207,4 @@ packages:
     version: "2.0.8"
 sdks:
   dart: ">=2.2.0 <3.0.0"
-  flutter: ">=1.2.0 <2.0.0"
+  flutter: ">=1.5.0 <2.0.0"
