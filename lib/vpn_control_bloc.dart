@@ -47,6 +47,8 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     return func(hst, user, pass);
   }
 
+  static final _successPattern = RegExp(r'CONNECTED\s+SUCCESS');
+
   Future<VpnControlState> _queryHost() async {
     http.Response response;
     try {
@@ -57,7 +59,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     if (response?.statusCode != 200) {
       return VpnControlState.error;
     }
-    if (response.body.contains(RegExp(r'CONNECTED\s+SUCCESS'))) {
+    if (response.body.contains(_successPattern)) {
       return VpnControlState.on;
     } else {
       return VpnControlState.off;
