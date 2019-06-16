@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
+const _kTimeout = Duration(seconds: 5);
+
 class DdWrt {
   static DdWrt _instance;
 
@@ -15,7 +17,7 @@ class DdWrt {
     String pass,
   ) async {
     final uri = Uri.http(host, '/Status_OpenVPN.asp');
-    return http.get(uri, headers: _basicAuth(user, pass));
+    return http.get(uri, headers: _basicAuth(user, pass)).timeout(_kTimeout);
   }
 
   Future<http.Response> toggleVpn(
@@ -39,7 +41,9 @@ class DdWrt {
     Map<String, String> data,
   ) {
     final uri = Uri.http(host, '/applyuser.cgi');
-    return http.post(uri, headers: _basicAuth(user, pass), body: data);
+    return http
+        .post(uri, headers: _basicAuth(user, pass), body: data)
+        .timeout(_kTimeout);
   }
 
   Map<String, String> _basicAuth(String user, String pass) {
