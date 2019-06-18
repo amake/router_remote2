@@ -30,10 +30,10 @@ enum VpnControlState { on, off, querying, error, disallowed, unknown }
 class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   final WifiAccessBloc wifiBloc;
   final SharedPreferencesBloc sharedPreferencesBloc;
-  StreamSubscription<WifiAccessState> _subscription;
+  StreamSubscription<WifiAccessState> _wifiSubscription;
 
   VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc) {
-    _subscription = wifiBloc.state
+    _wifiSubscription = wifiBloc.state
         .listen((currentState) => dispatch(WifiChanged(currentState.status)));
   }
 
@@ -105,7 +105,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _wifiSubscription.cancel();
     super.dispose();
   }
 
