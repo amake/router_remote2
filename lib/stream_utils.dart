@@ -27,6 +27,7 @@ class TimerSink<T> extends EventSink<T> {
   @override
   void close() {
     _timer?.cancel();
+    outSink.close();
   }
 
   @override
