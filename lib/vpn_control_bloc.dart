@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/ddwrt.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
+import 'package:router_remote2/stream_utils.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
 abstract class VpnControlEvent extends Equatable {
@@ -31,10 +32,14 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   final WifiAccessBloc wifiBloc;
   final SharedPreferencesBloc sharedPreferencesBloc;
   StreamSubscription<WifiAccessState> _wifiSubscription;
+  StreamSubscription<SharedPreferencesState> _prefsSubscription;
 
   VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc) {
     _wifiSubscription = wifiBloc.state
         .listen((currentState) => dispatch(WifiChanged(currentState.status)));
+    _prefsSubscription = sharedPreferencesBloc.state
+        .transform(Debounce())
+        .listen((currentState) => dispatch(VpnRefresh()));
   }
 
   FutureOr<T> _withConnectionSettings<T>(
@@ -106,6 +111,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   @override
   void dispose() {
     _wifiSubscription.cancel();
+    _prefsSubscription.cancel();
     super.dispose();
   }
 
