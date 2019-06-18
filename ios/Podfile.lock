@@ -3,7 +3,7 @@ PODS:
     - Flutter
     - Reachability
   - Flutter (1.0.0)
-  - location_permissions (2.0.1):
+  - location_permissions (2.0.2):
     - Flutter
   - Reachability (3.2)
   - shared_preferences (0.0.1):
@@ -32,7 +32,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  location_permissions: db47e77cf4f1359866d627523fb7812899a752f3
+  location_permissions: 67cfaff583afbb027a9f9248196f4b79c40f3cdc
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
 
