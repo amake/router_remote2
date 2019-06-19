@@ -55,6 +55,9 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   static final _successPattern = RegExp(r'CONNECTED\s+SUCCESS');
 
   Future<VpnControlState> _queryHost() async {
+    if (!canQuery) {
+      return VpnControlState.unknown;
+    }
     http.Response response;
     try {
       response = await _withConnectionSettings(DdWrt().statusOpenVpn);
@@ -72,7 +75,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   Future<VpnControlState> _toggle(bool enabled) async {
-    if (dryRun) {
+    if (!canQuery || dryRun) {
       return VpnControlState.unknown;
     }
     http.Response response;
