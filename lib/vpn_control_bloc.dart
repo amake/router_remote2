@@ -72,8 +72,6 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   Future<VpnControlState> _toggle(bool enabled) async {
-    final dryRun = sharedPreferencesBloc.currentState
-        .getOrDefault<bool>(AppSettings.dryRun, false);
     if (dryRun) {
       return VpnControlState.unknown;
     }
@@ -131,6 +129,9 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     }
     throw Exception('Unknown state: $currentState');
   }
+
+  bool get dryRun => sharedPreferencesBloc.currentState
+      .getOrDefault<bool>(AppSettings.dryRun, false);
 
   @override
   Stream<VpnControlState> mapEventToState(VpnControlEvent event) async* {
