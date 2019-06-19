@@ -122,12 +122,21 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
       case VpnControlState.off:
       case VpnControlState.unknown:
       case VpnControlState.error:
-        return true;
+        return canQuery;
       case VpnControlState.disallowed:
       case VpnControlState.querying:
         return false;
     }
     throw Exception('Unknown state: $currentState');
+  }
+
+  bool get canQuery {
+    switch (wifiBloc.currentState.status) {
+      case WifiAccessStatus.connected:
+        return true;
+      default:
+        return false;
+    }
   }
 
   bool get dryRun => sharedPreferencesBloc.currentState
