@@ -44,7 +44,7 @@ class _RequiredSettingsState extends State<RequiredSettings> {
           return const SettingsRequiredPage();
         } else {
           return BlocProvider(
-            bloc: _sharedPreferencesBloc,
+            builder: (context) => _sharedPreferencesBloc,
             child: widget.child,
           );
         }

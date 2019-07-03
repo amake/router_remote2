@@ -46,9 +46,9 @@ class _WifiConnectionState extends State<WifiConnection> {
             return const NoConnectionPage();
           default:
             return BlocProvider(
-              bloc: _connectivityBloc,
+              builder: (context) => _connectivityBloc,
               child: BlocProvider(
-                bloc: _wifiAccessBloc,
+                builder: (context) => _wifiAccessBloc,
                 child: widget.child,
               ),
             );
