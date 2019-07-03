@@ -5,53 +5,25 @@ import 'package:router_remote2/connectivity_bloc.dart';
 import 'package:router_remote2/location_permissions_page.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
-class WifiConnection extends StatefulWidget {
+class WifiConnection extends StatelessWidget {
   final Widget child;
 
   WifiConnection({@required this.child}) : assert(child != null);
 
   @override
-  _WifiConnectionState createState() => _WifiConnectionState();
-}
-
-class _WifiConnectionState extends State<WifiConnection> {
-  ConnectivityBloc _connectivityBloc;
-  WifiAccessBloc _wifiAccessBloc;
-
-  @override
-  void initState() {
-    _connectivityBloc = ConnectivityBloc();
-    _wifiAccessBloc = WifiAccessBloc(_connectivityBloc);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _connectivityBloc.dispose();
-    _wifiAccessBloc.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-      bloc: _wifiAccessBloc,
+      bloc: BlocProvider.of<WifiAccessBloc>(context),
       builder: (context, WifiAccessState currentState) {
         switch (currentState.status) {
           case WifiAccessStatus.insufficientPermissions:
             return LocationPermissionsPage(
-                onGranted: () => _connectivityBloc
+                onGranted: () => BlocProvider.of<ConnectivityBloc>(context)
                     .dispatch(ConnectivityPermissionsChanged()));
           case WifiAccessStatus.disconnected:
             return const NoConnectionPage();
           default:
-            return BlocProvider(
-              builder: (context) => _connectivityBloc,
-              child: BlocProvider(
-                builder: (context) => _wifiAccessBloc,
-                child: widget.child,
-              ),
-            );
+            return child;
         }
       },
     );

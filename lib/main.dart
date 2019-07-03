@@ -1,10 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:router_remote2/app_routes.dart';
+import 'package:router_remote2/app_settings.dart';
+import 'package:router_remote2/connectivity_bloc.dart';
 import 'package:router_remote2/debug.dart';
 import 'package:router_remote2/required_settings.dart';
 import 'package:router_remote2/settings_screen.dart';
+import 'package:router_remote2/shared_preferences_bloc.dart';
 import 'package:router_remote2/vpn_control_page.dart';
+import 'package:router_remote2/wifi_access_bloc.dart';
 import 'package:router_remote2/wifi_connection.dart';
 
 void main() {
@@ -39,18 +44,36 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Router Remote'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: RequiredSettings(child: body),
+    return BlocProviderTree(
+      blocProviders: [
+        BlocProvider<SharedPreferencesBloc>(
+          builder: (context) => SharedPreferencesBloc()
+            ..require<String>(AppSettings.host)
+            ..require<String>(AppSettings.username)
+            ..require<String>(AppSettings.password)
+            ..add<bool>(AppSettings.dryRun),
+        ),
+        BlocProvider<ConnectivityBloc>(
+          builder: (context) => ConnectivityBloc(),
+        ),
+        BlocProvider<WifiAccessBloc>(
+          builder: (context) =>
+              WifiAccessBloc(BlocProvider.of<ConnectivityBloc>(context)),
+        ),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Router Remote'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => Navigator.pushNamed(context, AppRoutes.settings),
+            )
+          ],
+        ),
+        body: SafeArea(
+          child: RequiredSettings(child: body),
+        ),
       ),
     );
   }
