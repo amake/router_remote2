@@ -2,6 +2,15 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+T cast<T>(Object value) {
+  if (value == null) {
+    return null;
+  } else if (value is T) {
+    return value;
+  }
+  throw Exception('Value $value is not a $T');
+}
+
 class SharedPreferencesStream {
   static SharedPreferencesStream _instance;
 
@@ -14,7 +23,7 @@ class SharedPreferencesStream {
 
   Future<T> _get<T>(String key) async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.get(key);
+    return cast<T>(prefs.get(key));
   }
 
   Future<bool> _put(String key, Object value) async {

@@ -160,7 +160,7 @@ class _VpnControlPageState extends State<VpnControlPage>
     }
   }
 
-  Function _onOffAction(VpnControlState currentState) {
+  VoidCallback _onOffAction(VpnControlState currentState) {
     switch (currentState) {
       case VpnControlState.on:
         return () => _vpnControlBloc.dispatch(VpnTurnOff());

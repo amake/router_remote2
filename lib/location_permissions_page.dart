@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,7 +81,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
     throw Exception('Unknown state: $currentState');
   }
 
-  Function _buttonAction(LocationPermissionsState currentState) {
+  VoidCallback _buttonAction(LocationPermissionsState currentState) {
     switch (currentState) {
       case LocationPermissionsState.granted:
         return null;

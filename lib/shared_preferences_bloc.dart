@@ -29,7 +29,7 @@ class SharedPreferencesState extends Equatable {
       : super([data, requiredKeys]);
 
   T get<T>(String key, {T defaultValue}) {
-    return data.containsKey(key) ? data[key] : defaultValue;
+    return data.containsKey(key) ? cast<T>(data[key]) : defaultValue;
   }
 
   SharedPreferencesState put(String key, Object value) {
