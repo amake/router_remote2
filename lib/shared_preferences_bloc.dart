@@ -28,10 +28,9 @@ class SharedPreferencesState extends Equatable {
   SharedPreferencesState(this.data, this.requiredKeys)
       : super([data, requiredKeys]);
 
-  T get<T>(String key) => data[key];
-
-  T getOrDefault<T>(String key, T defaultValue) =>
-      data.containsKey(key) ? data[key] : defaultValue;
+  T get<T>(String key, {T defaultValue}) {
+    return data.containsKey(key) ? data[key] : defaultValue;
+  }
 
   SharedPreferencesState put(String key, Object value) {
     final newData = Map.of(data);

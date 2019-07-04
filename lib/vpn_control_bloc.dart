@@ -143,7 +143,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   bool get dryRun => sharedPreferencesBloc.currentState
-      .getOrDefault<bool>(AppSettings.dryRun, false);
+      .get<bool>(AppSettings.dryRun, defaultValue: false);
 
   @override
   Stream<VpnControlState> mapEventToState(VpnControlEvent event) async* {
