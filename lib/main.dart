@@ -48,10 +48,10 @@ class AppScaffold extends StatelessWidget {
       blocProviders: [
         BlocProvider<SharedPreferencesBloc>(
           builder: (context) => SharedPreferencesBloc()
-            ..require<String>(AppSettings.host)
-            ..require<String>(AppSettings.username)
-            ..require<String>(AppSettings.password)
-            ..add<bool>(AppSettings.dryRun),
+            ..listen<String>(AppSettings.host, required: true)
+            ..listen<String>(AppSettings.username, required: true)
+            ..listen<String>(AppSettings.password, required: true)
+            ..listen<bool>(AppSettings.dryRun),
         ),
         BlocProvider<ConnectivityBloc>(
           builder: (context) => ConnectivityBloc(),

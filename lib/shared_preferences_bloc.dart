@@ -55,13 +55,12 @@ class SharedPreferencesBloc
     extends Bloc<SharedPreferencesEvent, SharedPreferencesState> {
   final _streamSubscriptions = <String, StreamSubscription>{};
 
-  void require<T>(String key) {
+  void listen<T>(String key, {bool required = false}) {
+    assert(required != null);
     _subscribe<T>(key);
-    dispatch(RequiredKeyAdded(key));
-  }
-
-  void add<T>(String key) {
-    _subscribe<T>(key);
+    if (required) {
+      dispatch(RequiredKeyAdded(key));
+    }
   }
 
   void _subscribe<T>(String key) {
