@@ -8,7 +8,7 @@ import 'package:router_remote2/wifi_access_bloc.dart';
 class WifiConnection extends StatelessWidget {
   final Widget child;
 
-  WifiConnection({@required this.child}) : assert(child != null);
+  const WifiConnection({@required this.child}) : assert(child != null);
 
   @override
   Widget build(BuildContext context) {

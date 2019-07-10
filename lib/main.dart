@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
 class AppScaffold extends StatelessWidget {
   final Widget body;
 
-  AppScaffold({@required this.body}) : assert(body != null);
+  const AppScaffold({@required this.body}) : assert(body != null);
 
   @override
   Widget build(BuildContext context) {

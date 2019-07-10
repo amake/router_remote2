@@ -176,7 +176,8 @@ class SingleChildRefreshIndicator extends StatelessWidget {
   final Widget child;
   final RefreshCallback onRefresh;
 
-  SingleChildRefreshIndicator({@required this.child, @required this.onRefresh})
+  const SingleChildRefreshIndicator(
+      {@required this.child, @required this.onRefresh})
       : assert(child != null);
 
   @override
