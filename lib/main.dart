@@ -44,8 +44,8 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProviderTree(
-      blocProviders: [
+    return MultiBlocProvider(
+      providers: [
         BlocProvider<SharedPreferencesBloc>(
           builder: (context) => SharedPreferencesBloc()
             ..listen<String>(AppSettings.host, required: true)
