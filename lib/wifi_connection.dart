@@ -12,9 +12,8 @@ class WifiConnection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: BlocProvider.of<WifiAccessBloc>(context),
-      builder: (context, WifiAccessState currentState) {
+    return BlocBuilder<WifiAccessBloc, WifiAccessState>(
+      builder: (context, currentState) {
         switch (currentState.status) {
           case WifiAccessStatus.insufficientPermissions:
             return LocationPermissionsPage(

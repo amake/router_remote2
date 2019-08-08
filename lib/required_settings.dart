@@ -13,9 +13,8 @@ class RequiredSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: BlocProvider.of<SharedPreferencesBloc>(context),
-      builder: (context, SharedPreferencesState currentState) {
+    return BlocBuilder<SharedPreferencesBloc, SharedPreferencesState>(
+      builder: (context, currentState) {
         if (!currentState.isComplete) {
           return const SettingsRequiredPage();
         } else {
