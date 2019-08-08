@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:router_remote2/common_widgets.dart';
-import 'package:router_remote2/shared_preferences_bloc.dart';
 import 'package:router_remote2/vpn_control_bloc.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
@@ -17,21 +16,14 @@ class _VpnControlPageState extends State<VpnControlPage>
     with
         // ignore: prefer_mixin
         WidgetsBindingObserver {
-  VpnControlBloc _vpnControlBloc;
-
   @override
   void initState() {
-    _vpnControlBloc = VpnControlBloc(
-      BlocProvider.of<WifiAccessBloc>(context),
-      BlocProvider.of<SharedPreferencesBloc>(context),
-    );
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _vpnControlBloc.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -39,12 +31,13 @@ class _VpnControlPageState extends State<VpnControlPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _vpnControlBloc.dispatch(VpnRefresh());
+      BlocProvider.of<VpnControlBloc>(context).dispatch(VpnRefresh());
     }
   }
 
   Future<void> _refresh() async {
-    if (!_vpnControlBloc.canRefresh) {
+    final bloc = BlocProvider.of<VpnControlBloc>(context);
+    if (!bloc.canRefresh) {
       return Future.value(null);
     }
     final completer = Completer<void>();
@@ -64,16 +57,15 @@ class _VpnControlPageState extends State<VpnControlPage>
       }
     }
 
-    subscription = _vpnControlBloc.state.listen(onData);
-    _vpnControlBloc.dispatch(VpnRefresh());
+    subscription = bloc.state.listen(onData);
+    bloc.dispatch(VpnRefresh());
     return completer.future;
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
-      bloc: _vpnControlBloc,
-      builder: (context, VpnControlState vpnState) {
+    return BlocBuilder<VpnControlBloc, VpnControlState>(
+      builder: (context, vpnState) {
         return Center(
           child: SingleChildRefreshIndicator(
             onRefresh: _refresh,
@@ -161,11 +153,12 @@ class _VpnControlPageState extends State<VpnControlPage>
   }
 
   VoidCallback _onOffAction(VpnControlState currentState) {
+    final bloc = BlocProvider.of<VpnControlBloc>(context);
     switch (currentState) {
       case VpnControlState.on:
-        return () => _vpnControlBloc.dispatch(VpnTurnOff());
+        return () => bloc.dispatch(VpnTurnOff());
       case VpnControlState.off:
-        return () => _vpnControlBloc.dispatch(VpnTurnOn());
+        return () => bloc.dispatch(VpnTurnOn());
       default:
         return null;
     }

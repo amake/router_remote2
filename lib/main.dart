@@ -8,6 +8,7 @@ import 'package:router_remote2/debug.dart';
 import 'package:router_remote2/required_settings.dart';
 import 'package:router_remote2/settings_screen.dart';
 import 'package:router_remote2/shared_preferences_bloc.dart';
+import 'package:router_remote2/vpn_control_bloc.dart';
 import 'package:router_remote2/vpn_control_page.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 import 'package:router_remote2/wifi_connection.dart';
@@ -59,6 +60,12 @@ class AppScaffold extends StatelessWidget {
         BlocProvider<WifiAccessBloc>(
           builder: (context) =>
               WifiAccessBloc(BlocProvider.of<ConnectivityBloc>(context)),
+        ),
+        BlocProvider<VpnControlBloc>(
+          builder: (context) => VpnControlBloc(
+            BlocProvider.of<WifiAccessBloc>(context),
+            BlocProvider.of<SharedPreferencesBloc>(context),
+          ),
         ),
       ],
       child: Scaffold(
