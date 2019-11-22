@@ -4,18 +4,25 @@ import 'package:bloc/bloc.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:equatable/equatable.dart';
 
-class ConnectivityEvent extends Equatable {
-  ConnectivityEvent([List props = const []]) : super(props);
+abstract class ConnectivityEvent extends Equatable {
+  const ConnectivityEvent();
 }
 
-class ConnectivityPermissionsChanged extends ConnectivityEvent {}
+class ConnectivityPermissionsChanged extends ConnectivityEvent {
+  const ConnectivityPermissionsChanged();
+
+  @override
+  List<Object> get props => const [];
+}
 
 class ConnectivityUpdated extends ConnectivityEvent {
   final ConnectivityResult connectivity;
   final String wifiName;
 
-  ConnectivityUpdated({this.connectivity, this.wifiName})
-      : super([connectivity, wifiName]);
+  const ConnectivityUpdated({this.connectivity, this.wifiName});
+
+  @override
+  List<Object> get props => [connectivity, wifiName];
 }
 
 class ConnectivityState extends Equatable {
@@ -23,9 +30,9 @@ class ConnectivityState extends Equatable {
   final String wifiName;
   final bool initialized;
 
-  ConnectivityState({this.connection, this.wifiName, this.initialized = false})
-      : assert(initialized != null),
-        super([connection, wifiName, initialized]);
+  const ConnectivityState(
+      {this.connection, this.wifiName, this.initialized = false})
+      : assert(initialized != null);
 
   ConnectivityState copyWith({
     ConnectivityResult connection,
@@ -40,6 +47,9 @@ class ConnectivityState extends Equatable {
 
   bool get missingLocationPermissions =>
       initialized && connection == ConnectivityResult.wifi && wifiName == null;
+
+  @override
+  List<Object> get props => [connection, wifiName, initialized];
 }
 
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
@@ -66,14 +76,14 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     ));
   }
 
- @override
+  @override
   Future<void> close() {
     _subscription.cancel();
     return super.close();
   }
 
   @override
-  ConnectivityState get initialState => ConnectivityState();
+  ConnectivityState get initialState => const ConnectivityState();
 
   @override
   Stream<ConnectivityState> mapEventToState(ConnectivityEvent event) async* {

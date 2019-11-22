@@ -5,28 +5,33 @@ import 'package:equatable/equatable.dart';
 import 'package:router_remote2/shared_preferences_stream.dart';
 
 abstract class SharedPreferencesEvent extends Equatable {
-  SharedPreferencesEvent([List props = const []]) : super(props);
+  const SharedPreferencesEvent();
 }
 
 class RequiredKeyAdded extends SharedPreferencesEvent {
   final String key;
 
-  RequiredKeyAdded(this.key) : super([key]);
+  const RequiredKeyAdded(this.key);
+
+  @override
+  List<Object> get props => [key];
 }
 
 class SharedPreferenceUpdated extends SharedPreferencesEvent {
   final String key;
   final Object value;
 
-  SharedPreferenceUpdated(this.key, this.value) : super([key, value]);
+  const SharedPreferenceUpdated(this.key, this.value);
+
+  @override
+  List<Object> get props => [key, value];
 }
 
 class SharedPreferencesState extends Equatable {
   final Map<String, Object> data;
   final Set<String> requiredKeys;
 
-  SharedPreferencesState(this.data, this.requiredKeys)
-      : super([data, requiredKeys]);
+  const SharedPreferencesState(this.data, this.requiredKeys);
 
   T get<T>(String key, {T defaultValue}) {
     return data.containsKey(key) ? cast<T>(data[key]) : defaultValue;
@@ -49,6 +54,9 @@ class SharedPreferencesState extends Equatable {
 
   bool get isComplete =>
       data.isNotEmpty && requiredKeys.every(data.containsKey);
+
+  @override
+  List<Object> get props => [data, requiredKeys];
 }
 
 class SharedPreferencesBloc
@@ -79,7 +87,7 @@ class SharedPreferencesBloc
 
   @override
   SharedPreferencesState get initialState =>
-      SharedPreferencesState({}, <String>{});
+      const SharedPreferencesState({}, <String>{});
 
   @override
   Stream<SharedPreferencesState> mapEventToState(

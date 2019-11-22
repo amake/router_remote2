@@ -11,19 +11,34 @@ import 'package:router_remote2/stream_utils.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
 abstract class VpnControlEvent extends Equatable {
-  VpnControlEvent([List props = const []]) : super([props]);
+  const VpnControlEvent();
 }
 
-class VpnTurnOff extends VpnControlEvent {}
+class VpnTurnOff extends VpnControlEvent {
+  const VpnTurnOff();
+  @override
+  List<Object> get props => const [];
+}
 
-class VpnTurnOn extends VpnControlEvent {}
+class VpnTurnOn extends VpnControlEvent {
+  const VpnTurnOn();
+  @override
+  List<Object> get props => const [];
+}
 
-class VpnRefresh extends VpnControlEvent {}
+class VpnRefresh extends VpnControlEvent {
+  const VpnRefresh();
+  @override
+  List<Object> get props => const [];
+}
 
 class WifiChanged extends VpnControlEvent {
   final WifiAccessStatus wifiStatus;
 
-  WifiChanged(this.wifiStatus) : super([wifiStatus]);
+  const WifiChanged(this.wifiStatus);
+
+  @override
+  List<Object> get props => [wifiStatus];
 }
 
 enum VpnControlState { on, off, querying, error, disallowed, unknown }
@@ -39,7 +54,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
         .listen((currentState) => add(WifiChanged(currentState.status)));
     _prefsSubscription = sharedPreferencesBloc
         .transform(Debounce())
-        .listen((currentState) => add(VpnRefresh()));
+        .listen((currentState) => add(const VpnRefresh()));
   }
 
   FutureOr<T> _withConnectionSettings<T>(

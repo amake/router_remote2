@@ -11,16 +11,17 @@ class WifiAccessEvent extends Equatable {
   final String allowedPattern;
   final ConnectivityState connectivity;
 
-  WifiAccessEvent({this.allowedPattern, this.connectivity})
-      : super([allowedPattern, connectivity]);
+  const WifiAccessEvent({this.allowedPattern, this.connectivity});
+
+  @override
+  List<Object> get props => [allowedPattern, connectivity];
 }
 
 class WifiAccessState extends Equatable {
   final String allowedPattern;
   final ConnectivityState connectivity;
 
-  WifiAccessState({this.allowedPattern, this.connectivity})
-      : super([allowedPattern, connectivity]);
+  const WifiAccessState({this.allowedPattern, this.connectivity});
 
   WifiAccessState copyWith({
     String allowedPattern,
@@ -48,6 +49,9 @@ class WifiAccessState extends Equatable {
       return WifiAccessStatus.disallowed;
     }
   }
+
+  @override
+  List<Object> get props => [allowedPattern, connectivity];
 }
 
 enum WifiAccessStatus {
@@ -79,7 +83,7 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
   }
 
   @override
-  WifiAccessState get initialState => WifiAccessState();
+  WifiAccessState get initialState => const WifiAccessState();
 
   @override
   Stream<WifiAccessState> mapEventToState(WifiAccessEvent event) async* {
