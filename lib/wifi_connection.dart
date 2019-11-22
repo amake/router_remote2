@@ -18,7 +18,7 @@ class WifiConnection extends StatelessWidget {
           case WifiAccessStatus.insufficientPermissions:
             return LocationPermissionsPage(
                 onGranted: () => BlocProvider.of<ConnectivityBloc>(context)
-                    .dispatch(ConnectivityPermissionsChanged()));
+                    .add(ConnectivityPermissionsChanged()));
           case WifiAccessStatus.disconnected:
             return const NoConnectionPage();
           default:

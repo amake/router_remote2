@@ -31,11 +31,12 @@ class _VpnControlPageState extends State<VpnControlPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      BlocProvider.of<VpnControlBloc>(context).dispatch(VpnRefresh());
+      BlocProvider.of<VpnControlBloc>(context).add(VpnRefresh());
     }
   }
 
   Future<void> _refresh() async {
+    // ignore: close_sinks
     final bloc = BlocProvider.of<VpnControlBloc>(context);
     if (!bloc.canRefresh) {
       return Future.value(null);
@@ -57,8 +58,8 @@ class _VpnControlPageState extends State<VpnControlPage>
       }
     }
 
-    subscription = bloc.state.listen(onData);
-    bloc.dispatch(VpnRefresh());
+    subscription = bloc.listen(onData);
+    bloc.add(VpnRefresh());
     return completer.future;
   }
 
@@ -124,7 +125,7 @@ class _VpnControlPageState extends State<VpnControlPage>
         return 'Checking...';
       case VpnControlState.disallowed:
         final networkName = BlocProvider.of<WifiAccessBloc>(context)
-            .currentState
+            .state
             .connectivity
             .wifiName;
         return 'Wi-Fi network “$networkName” is not allowed';
@@ -153,12 +154,13 @@ class _VpnControlPageState extends State<VpnControlPage>
   }
 
   VoidCallback _onOffAction(VpnControlState currentState) {
+    // ignore: close_sinks
     final bloc = BlocProvider.of<VpnControlBloc>(context);
     switch (currentState) {
       case VpnControlState.on:
-        return () => bloc.dispatch(VpnTurnOff());
+        return () => bloc.add(VpnTurnOff());
       case VpnControlState.off:
-        return () => bloc.dispatch(VpnTurnOn());
+        return () => bloc.add(VpnTurnOn());
       default:
         return null;
     }

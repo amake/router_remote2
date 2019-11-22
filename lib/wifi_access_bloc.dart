@@ -66,17 +66,16 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
   WifiAccessBloc(this.connectivityBloc) {
     _patternSubscription = SharedPreferencesStream()
         .streamForKey<String>(AppSettings.allowedWifiPattern)
-        .listen(
-            (pattern) => dispatch(WifiAccessEvent(allowedPattern: pattern)));
-    _connectivitySubscription = connectivityBloc.state.listen((connectivity) =>
-        dispatch(WifiAccessEvent(connectivity: connectivity)));
+        .listen((pattern) => add(WifiAccessEvent(allowedPattern: pattern)));
+    _connectivitySubscription = connectivityBloc.listen(
+        (connectivity) => add(WifiAccessEvent(connectivity: connectivity)));
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     _patternSubscription.cancel();
     _connectivitySubscription.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -84,7 +83,7 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
 
   @override
   Stream<WifiAccessState> mapEventToState(WifiAccessEvent event) async* {
-    yield currentState.copyWith(
+    yield state.copyWith(
       allowedPattern: event.allowedPattern,
       connectivity: event.connectivity,
     );

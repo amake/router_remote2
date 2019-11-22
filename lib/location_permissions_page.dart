@@ -29,7 +29,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
 
   @override
   void dispose() {
-    _bloc.dispose();
+    _bloc.close();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -37,7 +37,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _bloc.dispatch(LocationPermissionsEvent.checkPending);
+      _bloc.add(LocationPermissionsEvent.checkPending);
     }
   }
 
@@ -89,7 +89,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
       case LocationPermissionsState.pending: // fallthrough
       case LocationPermissionsState.querying: // fallthrough
       case LocationPermissionsState.unknown:
-        return () => _bloc.dispatch(LocationPermissionsEvent.query);
+        return () => _bloc.add(LocationPermissionsEvent.query);
     }
     throw Exception('Unknown state: $currentState');
   }

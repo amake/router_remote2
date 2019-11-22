@@ -52,24 +52,24 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   }
 
   Future<void> _init() async {
-    dispatch(ConnectivityUpdated(
+    add(ConnectivityUpdated(
       connectivity: await Connectivity().checkConnectivity(),
       wifiName: await Connectivity().getWifiName(),
     ));
   }
 
   Future<void> _onConnectivityChanged(ConnectivityResult result) async {
-    dispatch(ConnectivityUpdated(
+    add(ConnectivityUpdated(
       connectivity: result,
       // Fetch Wi-Fi name here as well in case the network changed
       wifiName: await Connectivity().getWifiName(),
     ));
   }
 
-  @override
-  void dispose() {
+ @override
+  Future<void> close() {
     _subscription.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -78,9 +78,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   @override
   Stream<ConnectivityState> mapEventToState(ConnectivityEvent event) async* {
     if (event is ConnectivityPermissionsChanged) {
-      yield currentState.copyWith(wifiName: await Connectivity().getWifiName());
+      yield state.copyWith(wifiName: await Connectivity().getWifiName());
     } else if (event is ConnectivityUpdated) {
-      yield currentState.copyWith(
+      yield state.copyWith(
         connection: event.connectivity,
         wifiName: event.wifiName,
         initialized: true,

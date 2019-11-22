@@ -11,7 +11,7 @@ class LocationPermissionsBloc
 
   LocationPermissionsBloc([Function onGranted])
       : onGranted = onGranted ?? (() {}) {
-    dispatch(LocationPermissionsEvent.init);
+    add(LocationPermissionsEvent.init);
   }
 
   @override
@@ -46,7 +46,7 @@ class LocationPermissionsBloc
         }
         break;
       case LocationPermissionsEvent.checkPending:
-        if (currentState == LocationPermissionsState.pending) {
+        if (state == LocationPermissionsState.pending) {
           final status = await Connectivity().getLocationServiceAuthorization();
           final nextState = _nextState(status);
           yield nextState;

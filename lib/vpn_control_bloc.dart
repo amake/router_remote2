@@ -35,17 +35,17 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   StreamSubscription<SharedPreferencesState> _prefsSubscription;
 
   VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc) {
-    _wifiSubscription = wifiBloc.state
-        .listen((currentState) => dispatch(WifiChanged(currentState.status)));
-    _prefsSubscription = sharedPreferencesBloc.state
+    _wifiSubscription = wifiBloc
+        .listen((currentState) => add(WifiChanged(currentState.status)));
+    _prefsSubscription = sharedPreferencesBloc
         .transform(Debounce())
-        .listen((currentState) => dispatch(VpnRefresh()));
+        .listen((currentState) => add(VpnRefresh()));
   }
 
   FutureOr<T> _withConnectionSettings<T>(
     FutureOr<T> Function(String host, String username, String password) func,
   ) async {
-    final prefsState = sharedPreferencesBloc.currentState;
+    final prefsState = sharedPreferencesBloc.state;
     final hst = prefsState.get<String>(AppSettings.host);
     final user = prefsState.get<String>(AppSettings.username);
     final pass = prefsState.get<String>(AppSettings.password);
@@ -110,17 +110,17 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     _wifiSubscription.cancel();
     _prefsSubscription.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
   VpnControlState get initialState => VpnControlState.unknown;
 
   bool get canRefresh {
-    switch (currentState) {
+    switch (state) {
       case VpnControlState.on:
       case VpnControlState.off:
       case VpnControlState.unknown:
@@ -130,11 +130,11 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
       case VpnControlState.querying:
         return false;
     }
-    throw Exception('Unknown state: $currentState');
+    throw Exception('Unknown state: $state');
   }
 
   bool get canQuery {
-    switch (wifiBloc.currentState.status) {
+    switch (wifiBloc.state.status) {
       case WifiAccessStatus.connected:
         return true;
       default:
@@ -142,7 +142,7 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
     }
   }
 
-  bool get dryRun => sharedPreferencesBloc.currentState
+  bool get dryRun => sharedPreferencesBloc.state
       .get<bool>(AppSettings.dryRun, defaultValue: false);
 
   @override

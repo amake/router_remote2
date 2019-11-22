@@ -55,26 +55,26 @@ class SharedPreferencesBloc
     extends Bloc<SharedPreferencesEvent, SharedPreferencesState> {
   final _streamSubscriptions = <String, StreamSubscription>{};
 
-  void listen<T>(String key, {bool required = false}) {
+  void listenFor<T>(String key, {bool required = false}) {
     assert(required != null);
     _subscribe<T>(key);
     if (required) {
-      dispatch(RequiredKeyAdded(key));
+      add(RequiredKeyAdded(key));
     }
   }
 
   void _subscribe<T>(String key) {
     _streamSubscriptions[key] = SharedPreferencesStream()
         .streamForKey<T>(key)
-        .listen((value) => dispatch(SharedPreferenceUpdated(key, value)));
+        .listen((value) => add(SharedPreferenceUpdated(key, value)));
   }
 
   @override
-  void dispose() {
+  Future<void> close() {
     for (final subscription in _streamSubscriptions.values) {
       subscription.cancel();
     }
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -85,9 +85,9 @@ class SharedPreferencesBloc
   Stream<SharedPreferencesState> mapEventToState(
       SharedPreferencesEvent event) async* {
     if (event is SharedPreferenceUpdated) {
-      yield currentState.put(event.key, event.value);
+      yield state.put(event.key, event.value);
     } else if (event is RequiredKeyAdded) {
-      yield currentState.requireKey(event.key);
+      yield state.requireKey(event.key);
     }
   }
 }
