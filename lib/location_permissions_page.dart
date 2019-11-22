@@ -4,73 +4,47 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:router_remote2/common_widgets.dart';
 import 'package:router_remote2/location_permissions_bloc.dart';
 
-class LocationPermissionsPage extends StatefulWidget {
+class LocationPermissionsPage extends StatelessWidget {
   final Function onGranted;
 
   const LocationPermissionsPage({this.onGranted});
 
   @override
-  _LocationPermissionsPageState createState() =>
-      _LocationPermissionsPageState();
-}
-
-class _LocationPermissionsPageState extends State<LocationPermissionsPage>
-    with
-        // ignore: prefer_mixin
-        WidgetsBindingObserver {
-  LocationPermissionsBloc _bloc;
-
-  @override
-  void initState() {
-    _bloc = LocationPermissionsBloc();
-    WidgetsBinding.instance.addObserver(this);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _bloc.close();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _bloc.checkPending();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LocationPermissionsBloc, LocationPermissionsState>(
-      bloc: _bloc,
-      builder: (context, state) {
-        return BlocListener<LocationPermissionsBloc, LocationPermissionsState>(
-          listener: (context, state) {
-            if (state == LocationPermissionsState.granted) {
-              widget.onGranted();
-            }
-          },
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const MainMessageText(
-                      'This app requires location permissions in order to restrict the Wi-Fi SSID'),
-                  const SizedBox(height: 16),
-                  RaisedButton(
-                    child: Text(_buttonTitle(state).toUpperCase()),
-                    onPressed: _buttonAction(state),
-                  )
-                ],
+    return BlocProvider<LocationPermissionsBloc>(
+      builder: (context) => LocationPermissionsBloc(),
+      child: BlocListener<LocationPermissionsBloc, LocationPermissionsState>(
+        listener: (context, state) {
+          if (state == LocationPermissionsState.granted) {
+            onGranted();
+          }
+        },
+        child: BlocBuilder<LocationPermissionsBloc, LocationPermissionsState>(
+          builder: (context, state) {
+            return OnResumed(
+              listener: () => BlocProvider.of<LocationPermissionsBloc>(context)
+                  .checkPending(),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const MainMessageText(
+                          'This app requires location permissions in order to restrict the Wi-Fi SSID'),
+                      const SizedBox(height: 16),
+                      RaisedButton(
+                        child: Text(_buttonTitle(state).toUpperCase()),
+                        onPressed: _buttonAction(context, state),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -88,7 +62,10 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
     throw Exception('Unknown state: $currentState');
   }
 
-  VoidCallback _buttonAction(LocationPermissionsState currentState) {
+  VoidCallback _buttonAction(
+    BuildContext context,
+    LocationPermissionsState currentState,
+  ) {
     switch (currentState) {
       case LocationPermissionsState.granted: // fallthrough
       case LocationPermissionsState.denied:
@@ -96,8 +73,49 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
       case LocationPermissionsState.pending: // fallthrough
       case LocationPermissionsState.querying: // fallthrough
       case LocationPermissionsState.unknown:
-        return () => _bloc.query();
+        return () => BlocProvider.of<LocationPermissionsBloc>(context).query();
     }
     throw Exception('Unknown state: $currentState');
+  }
+}
+
+class OnResumed extends StatefulWidget {
+  final VoidCallback listener;
+  final Widget child;
+
+  const OnResumed({@required this.listener, @required this.child})
+      : assert(listener != null),
+        assert(child != null);
+
+  @override
+  _OnResumedState createState() => _OnResumedState();
+}
+
+class _OnResumedState extends State<OnResumed>
+    with
+// ignore: prefer_mixin
+        WidgetsBindingObserver {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      widget.listener();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }
