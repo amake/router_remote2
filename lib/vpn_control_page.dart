@@ -31,7 +31,7 @@ class _VpnControlPageState extends State<VpnControlPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      BlocProvider.of<VpnControlBloc>(context).add(const VpnRefresh());
+      BlocProvider.of<VpnControlBloc>(context).refresh();
     }
   }
 
@@ -59,7 +59,7 @@ class _VpnControlPageState extends State<VpnControlPage>
     }
 
     subscription = bloc.listen(onData);
-    bloc.add(const VpnRefresh());
+    bloc.refresh();
     return completer.future;
   }
 
@@ -158,9 +158,9 @@ class _VpnControlPageState extends State<VpnControlPage>
     final bloc = BlocProvider.of<VpnControlBloc>(context);
     switch (currentState) {
       case VpnControlState.on:
-        return () => bloc.add(const VpnTurnOff());
+        return () => bloc.setEnabled(false);
       case VpnControlState.off:
-        return () => bloc.add(const VpnTurnOn());
+        return () => bloc.setEnabled(true);
       default:
         return null;
     }

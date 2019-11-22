@@ -4,24 +4,24 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:router_remote2/shared_preferences_stream.dart';
 
-abstract class SharedPreferencesEvent extends Equatable {
-  const SharedPreferencesEvent();
+abstract class _SharedPreferencesEvent extends Equatable {
+  const _SharedPreferencesEvent();
 }
 
-class RequiredKeyAdded extends SharedPreferencesEvent {
+class _RequiredKeyAdded extends _SharedPreferencesEvent {
   final String key;
 
-  const RequiredKeyAdded(this.key);
+  const _RequiredKeyAdded(this.key);
 
   @override
   List<Object> get props => [key];
 }
 
-class SharedPreferenceUpdated extends SharedPreferencesEvent {
+class _SharedPreferenceUpdated extends _SharedPreferencesEvent {
   final String key;
   final Object value;
 
-  const SharedPreferenceUpdated(this.key, this.value);
+  const _SharedPreferenceUpdated(this.key, this.value);
 
   @override
   List<Object> get props => [key, value];
@@ -60,21 +60,21 @@ class SharedPreferencesState extends Equatable {
 }
 
 class SharedPreferencesBloc
-    extends Bloc<SharedPreferencesEvent, SharedPreferencesState> {
+    extends Bloc<_SharedPreferencesEvent, SharedPreferencesState> {
   final _streamSubscriptions = <String, StreamSubscription>{};
 
   void listenFor<T>(String key, {bool required = false}) {
     assert(required != null);
     _subscribe<T>(key);
     if (required) {
-      add(RequiredKeyAdded(key));
+      add(_RequiredKeyAdded(key));
     }
   }
 
   void _subscribe<T>(String key) {
     _streamSubscriptions[key] = SharedPreferencesStream()
         .streamForKey<T>(key)
-        .listen((value) => add(SharedPreferenceUpdated(key, value)));
+        .listen((value) => add(_SharedPreferenceUpdated(key, value)));
   }
 
   @override
@@ -91,10 +91,10 @@ class SharedPreferencesBloc
 
   @override
   Stream<SharedPreferencesState> mapEventToState(
-      SharedPreferencesEvent event) async* {
-    if (event is SharedPreferenceUpdated) {
+      _SharedPreferencesEvent event) async* {
+    if (event is _SharedPreferenceUpdated) {
       yield state.put(event.key, event.value);
-    } else if (event is RequiredKeyAdded) {
+    } else if (event is _RequiredKeyAdded) {
       yield state.requireKey(event.key);
     }
   }

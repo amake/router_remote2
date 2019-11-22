@@ -1,17 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:connectivity/connectivity.dart';
 
-enum LocationPermissionsEvent { init, query, checkPending }
+enum _LocationPermissionsEvent { init, query, checkPending }
 
 enum LocationPermissionsState { unknown, granted, denied, querying, pending }
 
 class LocationPermissionsBloc
-    extends Bloc<LocationPermissionsEvent, LocationPermissionsState> {
+    extends Bloc<_LocationPermissionsEvent, LocationPermissionsState> {
   final Function onGranted;
 
   LocationPermissionsBloc([Function onGranted])
       : onGranted = onGranted ?? (() {}) {
-    add(LocationPermissionsEvent.init);
+    add(_LocationPermissionsEvent.init);
   }
 
   @override
@@ -19,10 +19,10 @@ class LocationPermissionsBloc
 
   @override
   Stream<LocationPermissionsState> mapEventToState(
-    LocationPermissionsEvent event,
+    _LocationPermissionsEvent event,
   ) async* {
     switch (event) {
-      case LocationPermissionsEvent.init:
+      case _LocationPermissionsEvent.init:
         yield LocationPermissionsState.querying;
         final status = await Connectivity().getLocationServiceAuthorization();
         final nextState = _nextState(status);
@@ -35,7 +35,7 @@ class LocationPermissionsBloc
           yield LocationPermissionsState.unknown;
         }
         break;
-      case LocationPermissionsEvent.query:
+      case _LocationPermissionsEvent.query:
         yield LocationPermissionsState.querying;
         final status =
             await Connectivity().requestLocationServiceAuthorization();
@@ -45,7 +45,7 @@ class LocationPermissionsBloc
           onGranted();
         }
         break;
-      case LocationPermissionsEvent.checkPending:
+      case _LocationPermissionsEvent.checkPending:
         if (state == LocationPermissionsState.pending) {
           final status = await Connectivity().getLocationServiceAuthorization();
           final nextState = _nextState(status);
@@ -73,4 +73,8 @@ class LocationPermissionsBloc
     }
     throw Exception('Unknown status: $status');
   }
+
+  void query() => add(_LocationPermissionsEvent.query);
+
+  void checkPending() => add(_LocationPermissionsEvent.checkPending);
 }

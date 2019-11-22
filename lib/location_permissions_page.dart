@@ -37,7 +37,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _bloc.add(LocationPermissionsEvent.checkPending);
+      _bloc.checkPending();
     }
   }
 
@@ -89,7 +89,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
       case LocationPermissionsState.pending: // fallthrough
       case LocationPermissionsState.querying: // fallthrough
       case LocationPermissionsState.unknown:
-        return () => _bloc.add(LocationPermissionsEvent.query);
+        return () => _bloc.query();
     }
     throw Exception('Unknown state: $currentState');
   }

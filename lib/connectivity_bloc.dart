@@ -4,25 +4,15 @@ import 'package:bloc/bloc.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ConnectivityEvent extends Equatable {
-  const ConnectivityEvent();
+abstract class _ConnectivityEvent extends Equatable {
+  const _ConnectivityEvent();
 }
 
-class ConnectivityPermissionsChanged extends ConnectivityEvent {
-  const ConnectivityPermissionsChanged();
+class _RefreshConnectivity extends _ConnectivityEvent {
+  const _RefreshConnectivity();
 
   @override
   List<Object> get props => const [];
-}
-
-class ConnectivityUpdated extends ConnectivityEvent {
-  final ConnectivityResult connectivity;
-  final String wifiName;
-
-  const ConnectivityUpdated({this.connectivity, this.wifiName});
-
-  @override
-  List<Object> get props => [connectivity, wifiName];
 }
 
 class ConnectivityState extends Equatable {
@@ -52,29 +42,17 @@ class ConnectivityState extends Equatable {
   List<Object> get props => [connection, wifiName, initialized];
 }
 
-class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
+class ConnectivityBloc extends Bloc<_ConnectivityEvent, ConnectivityState> {
   StreamSubscription<ConnectivityResult> _subscription;
 
   ConnectivityBloc() {
     _subscription =
         Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
-    _init();
+    refresh();
   }
 
-  Future<void> _init() async {
-    add(ConnectivityUpdated(
-      connectivity: await Connectivity().checkConnectivity(),
-      wifiName: await Connectivity().getWifiName(),
-    ));
-  }
-
-  Future<void> _onConnectivityChanged(ConnectivityResult result) async {
-    add(ConnectivityUpdated(
-      connectivity: result,
-      // Fetch Wi-Fi name here as well in case the network changed
-      wifiName: await Connectivity().getWifiName(),
-    ));
-  }
+  Future<void> _onConnectivityChanged(ConnectivityResult result) async =>
+      refresh();
 
   @override
   Future<void> close() {
@@ -86,15 +64,15 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   ConnectivityState get initialState => const ConnectivityState();
 
   @override
-  Stream<ConnectivityState> mapEventToState(ConnectivityEvent event) async* {
-    if (event is ConnectivityPermissionsChanged) {
-      yield state.copyWith(wifiName: await Connectivity().getWifiName());
-    } else if (event is ConnectivityUpdated) {
+  Stream<ConnectivityState> mapEventToState(_ConnectivityEvent event) async* {
+    if (event is _RefreshConnectivity) {
       yield state.copyWith(
-        connection: event.connectivity,
-        wifiName: event.wifiName,
+        wifiName: await Connectivity().getWifiName(),
+        connection: await Connectivity().checkConnectivity(),
         initialized: true,
       );
     }
   }
+
+  void refresh() => add(const _RefreshConnectivity());
 }

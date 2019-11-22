@@ -10,32 +10,31 @@ import 'package:router_remote2/shared_preferences_bloc.dart';
 import 'package:router_remote2/stream_utils.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
-abstract class VpnControlEvent extends Equatable {
-  const VpnControlEvent();
+abstract class _VpnControlEvent extends Equatable {
+  const _VpnControlEvent();
 }
 
-class VpnTurnOff extends VpnControlEvent {
-  const VpnTurnOff();
+class _VpnToggle extends _VpnControlEvent {
+  final bool enabled;
+
+  // ignore: avoid_positional_boolean_parameters
+  const _VpnToggle(this.enabled);
+
+  @override
+  List<Object> get props => [enabled];
+}
+
+class _VpnRefresh extends _VpnControlEvent {
+  const _VpnRefresh();
+
   @override
   List<Object> get props => const [];
 }
 
-class VpnTurnOn extends VpnControlEvent {
-  const VpnTurnOn();
-  @override
-  List<Object> get props => const [];
-}
-
-class VpnRefresh extends VpnControlEvent {
-  const VpnRefresh();
-  @override
-  List<Object> get props => const [];
-}
-
-class WifiChanged extends VpnControlEvent {
+class _WifiChanged extends _VpnControlEvent {
   final WifiAccessStatus wifiStatus;
 
-  const WifiChanged(this.wifiStatus);
+  const _WifiChanged(this.wifiStatus);
 
   @override
   List<Object> get props => [wifiStatus];
@@ -43,7 +42,7 @@ class WifiChanged extends VpnControlEvent {
 
 enum VpnControlState { on, off, querying, error, disallowed, unknown }
 
-class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
+class VpnControlBloc extends Bloc<_VpnControlEvent, VpnControlState> {
   final WifiAccessBloc wifiBloc;
   final SharedPreferencesBloc sharedPreferencesBloc;
   StreamSubscription<WifiAccessState> _wifiSubscription;
@@ -51,10 +50,10 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
 
   VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc) {
     _wifiSubscription = wifiBloc
-        .listen((currentState) => add(WifiChanged(currentState.status)));
+        .listen((currentState) => add(_WifiChanged(currentState.status)));
     _prefsSubscription = sharedPreferencesBloc
         .transform(Debounce())
-        .listen((currentState) => add(const VpnRefresh()));
+        .listen((currentState) => refresh());
   }
 
   FutureOr<T> _withConnectionSettings<T>(
@@ -161,8 +160,8 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
       .get<bool>(AppSettings.dryRun, defaultValue: false);
 
   @override
-  Stream<VpnControlState> mapEventToState(VpnControlEvent event) async* {
-    if (event is WifiChanged) {
+  Stream<VpnControlState> mapEventToState(_VpnControlEvent event) async* {
+    if (event is _WifiChanged) {
       switch (event.wifiStatus) {
         case WifiAccessStatus.unknown: // fallthrough
         case WifiAccessStatus.disconnected: // fallthrough
@@ -177,13 +176,13 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
           yield VpnControlState.disallowed;
           break;
       }
-    } else if (event is VpnTurnOn || event is VpnTurnOff) {
+    } else if (event is _VpnToggle) {
       yield VpnControlState.querying;
-      final enable = event is VpnTurnOn;
-      final toggledResult = await _toggle(enable);
+      final toggledResult = await _toggle(event.enabled);
       if (toggledResult == VpnControlState.unknown) {
-        final expected = enable ? VpnControlState.on : VpnControlState.off;
-        final delay = enable
+        final expected =
+            event.enabled ? VpnControlState.on : VpnControlState.off;
+        final delay = event.enabled
             ? const Duration(milliseconds: 1500)
             : const Duration(milliseconds: 500);
         await for (final state in _pollForState(expected, delay)) {
@@ -192,11 +191,16 @@ class VpnControlBloc extends Bloc<VpnControlEvent, VpnControlState> {
       } else {
         yield toggledResult;
       }
-    } else if (event is VpnRefresh) {
+    } else if (event is _VpnRefresh) {
       if (canRefresh) {
         yield VpnControlState.querying;
         yield await _queryHost();
       }
     }
   }
+
+  // ignore: avoid_positional_boolean_parameters
+  void setEnabled(bool enabled) => add(_VpnToggle(enabled));
+
+  void refresh() => add(const _VpnRefresh());
 }

@@ -7,14 +7,26 @@ import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/connectivity_bloc.dart';
 import 'package:router_remote2/shared_preferences_stream.dart';
 
-class WifiAccessEvent extends Equatable {
-  final String allowedPattern;
-  final ConnectivityState connectivity;
+abstract class _WifiAccessEvent extends Equatable {
+  const _WifiAccessEvent();
+}
 
-  const WifiAccessEvent({this.allowedPattern, this.connectivity});
+class _PatternUpdated extends _WifiAccessEvent {
+  final String allowedPattern;
+
+  const _PatternUpdated(this.allowedPattern);
 
   @override
-  List<Object> get props => [allowedPattern, connectivity];
+  List<Object> get props => [allowedPattern];
+}
+
+class _ConnectivityUpdated extends _WifiAccessEvent {
+  final ConnectivityState connectivity;
+
+  const _ConnectivityUpdated(this.connectivity);
+
+  @override
+  List<Object> get props => [connectivity];
 }
 
 class WifiAccessState extends Equatable {
@@ -62,7 +74,7 @@ enum WifiAccessStatus {
   insufficientPermissions
 }
 
-class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
+class WifiAccessBloc extends Bloc<_WifiAccessEvent, WifiAccessState> {
   final ConnectivityBloc connectivityBloc;
   StreamSubscription<String> _patternSubscription;
   StreamSubscription<ConnectivityState> _connectivitySubscription;
@@ -70,9 +82,9 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
   WifiAccessBloc(this.connectivityBloc) {
     _patternSubscription = SharedPreferencesStream()
         .streamForKey<String>(AppSettings.allowedWifiPattern)
-        .listen((pattern) => add(WifiAccessEvent(allowedPattern: pattern)));
-    _connectivitySubscription = connectivityBloc.listen(
-        (connectivity) => add(WifiAccessEvent(connectivity: connectivity)));
+        .listen((pattern) => add(_PatternUpdated(pattern)));
+    _connectivitySubscription = connectivityBloc
+        .listen((connectivity) => add(_ConnectivityUpdated(connectivity)));
   }
 
   @override
@@ -86,10 +98,11 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
   WifiAccessState get initialState => const WifiAccessState();
 
   @override
-  Stream<WifiAccessState> mapEventToState(WifiAccessEvent event) async* {
-    yield state.copyWith(
-      allowedPattern: event.allowedPattern,
-      connectivity: event.connectivity,
-    );
+  Stream<WifiAccessState> mapEventToState(_WifiAccessEvent event) async* {
+    if (event is _PatternUpdated) {
+      yield state.copyWith(allowedPattern: event.allowedPattern);
+    } else if (event is _ConnectivityUpdated) {
+      yield state.copyWith(connectivity: event.connectivity);
+    }
   }
 }
