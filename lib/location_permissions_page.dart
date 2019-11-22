@@ -43,9 +43,9 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+    return BlocBuilder<LocationPermissionsBloc, LocationPermissionsState>(
       bloc: _bloc,
-      builder: (context, LocationPermissionsState currentState) {
+      builder: (context, state) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -56,8 +56,8 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
                     'This app requires location permissions in order to restrict the Wi-Fi SSID'),
                 const SizedBox(height: 16),
                 RaisedButton(
-                  child: Text(_buttonTitle(currentState).toUpperCase()),
-                  onPressed: _buttonAction(currentState),
+                  child: Text(_buttonTitle(state).toUpperCase()),
+                  onPressed: _buttonAction(state),
                 )
               ],
             ),
