@@ -34,8 +34,8 @@ class NoConnectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: const Padding(
+    return const Center(
+      child: Padding(
         padding: EdgeInsets.all(16),
         child: MainMessageText('Please connect to Wi-Fi'),
       ),
