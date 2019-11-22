@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:location_permissions/location_permissions.dart';
+import 'package:connectivity/connectivity.dart';
 
-enum LocationPermissionsEvent { init, query, goToSettings, checkPending }
+enum LocationPermissionsEvent { init, query, checkPending }
 
 enum LocationPermissionsState { unknown, granted, denied, querying, pending }
 
@@ -24,7 +24,7 @@ class LocationPermissionsBloc
     switch (event) {
       case LocationPermissionsEvent.init:
         yield LocationPermissionsState.querying;
-        final status = await LocationPermissions().checkPermissionStatus();
+        final status = await Connectivity().getLocationServiceAuthorization();
         final nextState = _nextState(status);
         // Result is `denied` on first run on Android
         // so for init return `unknown`
@@ -37,7 +37,8 @@ class LocationPermissionsBloc
         break;
       case LocationPermissionsEvent.query:
         yield LocationPermissionsState.querying;
-        final status = await LocationPermissions().requestPermissions();
+        final status =
+            await Connectivity().requestLocationServiceAuthorization();
         final nextState = _nextState(status);
         yield nextState;
         if (nextState == LocationPermissionsState.granted) {
@@ -46,7 +47,7 @@ class LocationPermissionsBloc
         break;
       case LocationPermissionsEvent.checkPending:
         if (currentState == LocationPermissionsState.pending) {
-          final status = await LocationPermissions().checkPermissionStatus();
+          final status = await Connectivity().getLocationServiceAuthorization();
           final nextState = _nextState(status);
           yield nextState;
           if (nextState == LocationPermissionsState.granted) {
@@ -54,22 +55,21 @@ class LocationPermissionsBloc
           }
         }
         break;
-      case LocationPermissionsEvent.goToSettings:
-        yield LocationPermissionsState.pending;
-        await LocationPermissions().openAppSettings();
-        break;
     }
   }
 
-  LocationPermissionsState _nextState(PermissionStatus status) {
+  LocationPermissionsState _nextState(LocationAuthorizationStatus status) {
     switch (status) {
-      case PermissionStatus.granted: // fallthrough
-      case PermissionStatus.restricted:
-        return LocationPermissionsState.granted;
-      case PermissionStatus.denied:
-        return LocationPermissionsState.denied;
-      case PermissionStatus.unknown:
+      case LocationAuthorizationStatus.notDetermined: // fallthrough
+      case LocationAuthorizationStatus.unknown:
         return LocationPermissionsState.unknown;
+      case LocationAuthorizationStatus.restricted: // fallthrough
+      case LocationAuthorizationStatus.denied:
+        return LocationPermissionsState.denied;
+      case LocationAuthorizationStatus.authorizedAlways: // fallthrough
+      case LocationAuthorizationStatus.authorizedWhenInUse:
+        Connectivity().getWifiName().then((v) => print('Wi-Fi: $v'));
+        return LocationPermissionsState.granted;
     }
     throw Exception('Unknown status: $status');
   }

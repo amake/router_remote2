@@ -29,8 +29,6 @@ dependencies:
   flutter_bloc: ^0.20.0
   equatable: ^0.2.0
   connectivity: ^0.4.3
-  location_permissions: ^2.0.0
-
 
 dev_dependencies:
   flutter_test:

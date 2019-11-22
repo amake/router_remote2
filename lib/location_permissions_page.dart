@@ -83,14 +83,13 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
 
   VoidCallback _buttonAction(LocationPermissionsState currentState) {
     switch (currentState) {
-      case LocationPermissionsState.granted:
+      case LocationPermissionsState.granted: // fallthrough
+      case LocationPermissionsState.denied:
         return null;
       case LocationPermissionsState.pending: // fallthrough
       case LocationPermissionsState.querying: // fallthrough
       case LocationPermissionsState.unknown:
         return () => _bloc.dispatch(LocationPermissionsEvent.query);
-      case LocationPermissionsState.denied:
-        return () => _bloc.dispatch(LocationPermissionsEvent.goToSettings);
     }
     throw Exception('Unknown state: $currentState');
   }
