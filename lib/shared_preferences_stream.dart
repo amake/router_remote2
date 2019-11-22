@@ -32,6 +32,8 @@ class SharedPreferencesStream {
       return prefs.setString(key, value);
     } else if (value is bool) {
       return prefs.setBool(key, value);
+    } else if (value == null) {
+      return prefs.remove(key);
     }
     throw Exception('Unsupported value type: ${value.runtimeType}');
   }
