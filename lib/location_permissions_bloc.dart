@@ -7,10 +7,7 @@ enum LocationPermissionsState { unknown, granted, denied, querying, pending }
 
 class LocationPermissionsBloc
     extends Bloc<_LocationPermissionsEvent, LocationPermissionsState> {
-  final Function onGranted;
-
-  LocationPermissionsBloc([Function onGranted])
-      : onGranted = onGranted ?? (() {}) {
+  LocationPermissionsBloc() {
     add(_LocationPermissionsEvent.init);
   }
 
@@ -30,7 +27,6 @@ class LocationPermissionsBloc
         // so for init return `unknown`
         if (nextState == LocationPermissionsState.granted) {
           yield nextState;
-          onGranted();
         } else {
           yield LocationPermissionsState.unknown;
         }
@@ -39,20 +35,12 @@ class LocationPermissionsBloc
         yield LocationPermissionsState.querying;
         final status =
             await Connectivity().requestLocationServiceAuthorization();
-        final nextState = _nextState(status);
-        yield nextState;
-        if (nextState == LocationPermissionsState.granted) {
-          onGranted();
-        }
+        yield _nextState(status);
         break;
       case _LocationPermissionsEvent.checkPending:
         if (state == LocationPermissionsState.pending) {
           final status = await Connectivity().getLocationServiceAuthorization();
-          final nextState = _nextState(status);
-          yield nextState;
-          if (nextState == LocationPermissionsState.granted) {
-            onGranted();
-          }
+          yield _nextState(status);
         }
         break;
     }

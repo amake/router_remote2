@@ -22,7 +22,7 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
 
   @override
   void initState() {
-    _bloc = LocationPermissionsBloc(widget.onGranted);
+    _bloc = LocationPermissionsBloc();
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -46,20 +46,27 @@ class _LocationPermissionsPageState extends State<LocationPermissionsPage>
     return BlocBuilder<LocationPermissionsBloc, LocationPermissionsState>(
       bloc: _bloc,
       builder: (context, state) {
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                const MainMessageText(
-                    'This app requires location permissions in order to restrict the Wi-Fi SSID'),
-                const SizedBox(height: 16),
-                RaisedButton(
-                  child: Text(_buttonTitle(state).toUpperCase()),
-                  onPressed: _buttonAction(state),
-                )
-              ],
+        return BlocListener<LocationPermissionsBloc, LocationPermissionsState>(
+          listener: (context, state) {
+            if (state == LocationPermissionsState.granted) {
+              widget.onGranted();
+            }
+          },
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  const MainMessageText(
+                      'This app requires location permissions in order to restrict the Wi-Fi SSID'),
+                  const SizedBox(height: 16),
+                  RaisedButton(
+                    child: Text(_buttonTitle(state).toUpperCase()),
+                    onPressed: _buttonAction(state),
+                  )
+                ],
+              ),
             ),
           ),
         );
