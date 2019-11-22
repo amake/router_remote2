@@ -22,11 +22,14 @@ class WifiAccessState extends Equatable {
   WifiAccessState({this.allowedPattern, this.connectivity})
       : super([allowedPattern, connectivity]);
 
-  WifiAccessState updatedWith(WifiAccessEvent event) {
-    return WifiAccessState(
-        allowedPattern: event.allowedPattern ?? allowedPattern,
-        connectivity: event.connectivity ?? connectivity);
-  }
+  WifiAccessState copyWith({
+    String allowedPattern,
+    ConnectivityState connectivity,
+  }) =>
+      WifiAccessState(
+        allowedPattern: allowedPattern ?? this.allowedPattern,
+        connectivity: connectivity ?? this.connectivity,
+      );
 
   WifiAccessStatus get status {
     if (connectivity == null) {
@@ -81,6 +84,9 @@ class WifiAccessBloc extends Bloc<WifiAccessEvent, WifiAccessState> {
 
   @override
   Stream<WifiAccessState> mapEventToState(WifiAccessEvent event) async* {
-    yield currentState.updatedWith(event);
+    yield currentState.copyWith(
+      allowedPattern: event.allowedPattern,
+      connectivity: event.connectivity,
+    );
   }
 }

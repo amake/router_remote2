@@ -13,12 +13,9 @@ class ConnectivityPermissionsChanged extends ConnectivityEvent {}
 class ConnectivityUpdated extends ConnectivityEvent {
   final ConnectivityResult connectivity;
   final String wifiName;
-  final bool initEvent;
 
-  ConnectivityUpdated(
-      {this.connectivity, this.wifiName, this.initEvent = false})
-      : assert(initEvent != null),
-        super([connectivity, wifiName, initEvent]);
+  ConnectivityUpdated({this.connectivity, this.wifiName})
+      : super([connectivity, wifiName]);
 }
 
 class ConnectivityState extends Equatable {
@@ -30,12 +27,16 @@ class ConnectivityState extends Equatable {
       : assert(initialized != null),
         super([connection, wifiName, initialized]);
 
-  ConnectivityState updatedWith(ConnectivityUpdated event) {
-    return ConnectivityState(
-        connection: event.connectivity ?? connection,
-        wifiName: event.wifiName ?? wifiName,
-        initialized: initialized || event.initEvent);
-  }
+  ConnectivityState copyWith({
+    ConnectivityResult connection,
+    String wifiName,
+    bool initialized,
+  }) =>
+      ConnectivityState(
+        connection: connection ?? this.connection,
+        wifiName: wifiName ?? this.wifiName,
+        initialized: initialized ?? this.initialized,
+      );
 
   bool get missingLocationPermissions =>
       initialized && connection == ConnectivityResult.wifi && wifiName == null;
@@ -54,7 +55,6 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     dispatch(ConnectivityUpdated(
       connectivity: await Connectivity().checkConnectivity(),
       wifiName: await Connectivity().getWifiName(),
-      initEvent: true,
     ));
   }
 
@@ -78,10 +78,13 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   @override
   Stream<ConnectivityState> mapEventToState(ConnectivityEvent event) async* {
     if (event is ConnectivityPermissionsChanged) {
-      yield currentState.updatedWith(
-          ConnectivityUpdated(wifiName: await Connectivity().getWifiName()));
+      yield currentState.copyWith(wifiName: await Connectivity().getWifiName());
     } else if (event is ConnectivityUpdated) {
-      yield currentState.updatedWith(event);
+      yield currentState.copyWith(
+        connection: event.connectivity,
+        wifiName: event.wifiName,
+        initialized: true,
+      );
     }
   }
 }
