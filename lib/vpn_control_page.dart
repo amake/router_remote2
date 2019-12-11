@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -105,7 +106,7 @@ class _VpnControlPageState extends State<VpnControlPage>
       case VpnControlState.off:
         return const Icon(Icons.lock_open);
       case VpnControlState.querying:
-        return const Icon(Icons.refresh);
+        return const Spinner(child: Icon(Icons.refresh));
       case VpnControlState.disallowed:
         return const Icon(Icons.not_interested);
       case VpnControlState.error:
@@ -164,6 +165,58 @@ class _VpnControlPageState extends State<VpnControlPage>
       default:
         return null;
     }
+  }
+}
+
+class Spinner extends StatefulWidget {
+  const Spinner({@required this.child});
+
+  final Widget child;
+
+  @override
+  _SpinnerState createState() => _SpinnerState();
+}
+
+class _SpinnerState extends State<Spinner> with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SpinningContainer(child: widget.child, controller: _controller);
+  }
+}
+
+class SpinningContainer extends AnimatedWidget {
+  const SpinningContainer({
+    @required this.child,
+    @required this.controller,
+    Key key,
+  }) : super(key: key, listenable: controller);
+
+  final Widget child;
+  final AnimationController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: controller.value * 2.0 * pi,
+      child: child,
+    );
   }
 }
 
