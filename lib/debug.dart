@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 
@@ -28,4 +30,12 @@ class DebugBlocDelegate extends BlocDelegate {
     }
     super.onError(bloc, error, stackTrace);
   }
+}
+
+Future<T> time<T>(String tag, FutureOr<T> Function() func) async {
+  final start = DateTime.now();
+  final ret = await func();
+  final end = DateTime.now();
+  debugPrint('$tag: ${end.difference(start).inMilliseconds} ms');
+  return ret;
 }
