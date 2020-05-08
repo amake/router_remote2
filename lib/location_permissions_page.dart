@@ -12,7 +12,7 @@ class LocationPermissionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LocationPermissionsBloc>(
-      builder: (context) => LocationPermissionsBloc(),
+      create: (context) => LocationPermissionsBloc(),
       child: BlocListener<LocationPermissionsBloc, LocationPermissionsState>(
         listener: (context, state) {
           if (state == LocationPermissionsState.granted) {

@@ -59,7 +59,7 @@ class SectionHeader extends StatelessWidget {
         text,
         style: Theme.of(context)
             .textTheme
-            .title
+            .headline6
             .copyWith(color: Theme.of(context).accentColor),
       ),
     );

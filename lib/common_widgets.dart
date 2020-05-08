@@ -11,7 +11,7 @@ class MainMessageText extends StatelessWidget {
     return Text(
       text,
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.title,
+      style: Theme.of(context).textTheme.headline6,
     );
   }
 }

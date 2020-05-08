@@ -48,21 +48,21 @@ class AppScaffold extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SharedPreferencesBloc>(
-          builder: (context) => SharedPreferencesBloc()
+          create: (context) => SharedPreferencesBloc()
             ..listenFor<String>(AppSettings.host, required: true)
             ..listenFor<String>(AppSettings.username, required: true)
             ..listenFor<String>(AppSettings.password, required: true)
             ..listenFor<bool>(AppSettings.dryRun),
         ),
         BlocProvider<ConnectivityBloc>(
-          builder: (context) => ConnectivityBloc(),
+          create: (context) => ConnectivityBloc(),
         ),
         BlocProvider<WifiAccessBloc>(
-          builder: (context) =>
+          create: (context) =>
               WifiAccessBloc(BlocProvider.of<ConnectivityBloc>(context)),
         ),
         BlocProvider<VpnControlBloc>(
-          builder: (context) => VpnControlBloc(
+          create: (context) => VpnControlBloc(
             BlocProvider.of<WifiAccessBloc>(context),
             BlocProvider.of<SharedPreferencesBloc>(context),
           ),
