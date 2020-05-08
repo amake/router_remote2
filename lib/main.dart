@@ -15,10 +15,12 @@ import 'package:router_remote2/wifi_connection.dart';
 
 void main() {
   BlocSupervisor.delegate = DebugBlocDelegate();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
