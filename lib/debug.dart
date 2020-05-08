@@ -1,11 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 
-bool _isDebug = false;
-
-bool get isDebug {
-  assert((() => _isDebug = true)());
-  return _isDebug;
-}
+const bool isDebug = !kReleaseMode;
 
 class DebugBlocDelegate extends BlocDelegate {
   @override
