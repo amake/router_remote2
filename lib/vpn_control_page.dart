@@ -9,6 +9,8 @@ import 'package:router_remote2/vpn_control_bloc.dart';
 import 'package:router_remote2/wifi_access_bloc.dart';
 
 class VpnControlPage extends StatefulWidget {
+  const VpnControlPage({Key key}) : super(key: key);
+
   @override
   _VpnControlPageState createState() => _VpnControlPageState();
 }
@@ -169,7 +171,7 @@ class _VpnControlPageState extends State<VpnControlPage>
 }
 
 class Spinner extends StatefulWidget {
-  const Spinner({@required this.child});
+  const Spinner({@required this.child, Key key}) : super(key: key);
 
   final Widget child;
 
@@ -224,9 +226,12 @@ class SingleChildRefreshIndicator extends StatelessWidget {
   final Widget child;
   final RefreshCallback onRefresh;
 
-  const SingleChildRefreshIndicator(
-      {@required this.child, @required this.onRefresh})
-      : assert(child != null);
+  const SingleChildRefreshIndicator({
+    @required this.child,
+    @required this.onRefresh,
+    Key key,
+  })  : assert(child != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

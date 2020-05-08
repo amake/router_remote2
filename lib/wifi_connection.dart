@@ -8,7 +8,9 @@ import 'package:router_remote2/wifi_access_bloc.dart';
 class WifiConnection extends StatelessWidget {
   final Widget child;
 
-  const WifiConnection({@required this.child}) : assert(child != null);
+  const WifiConnection({@required this.child, Key key})
+      : assert(child != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class WifiConnection extends StatelessWidget {
 }
 
 class NoConnectionPage extends StatelessWidget {
-  const NoConnectionPage();
+  const NoConnectionPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ import 'package:router_remote2/location_permissions_bloc.dart';
 class LocationPermissionsPage extends StatelessWidget {
   final Function onGranted;
 
-  const LocationPermissionsPage({this.onGranted});
+  const LocationPermissionsPage({this.onGranted, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +83,10 @@ class OnResumed extends StatefulWidget {
   final VoidCallback listener;
   final Widget child;
 
-  const OnResumed({@required this.listener, @required this.child})
+  const OnResumed({@required this.listener, @required this.child, Key key})
       : assert(listener != null),
-        assert(child != null);
+        assert(child != null),
+        super(key: key);
 
   @override
   _OnResumedState createState() => _OnResumedState();

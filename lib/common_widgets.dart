@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 class MainMessageText extends StatelessWidget {
   final String text;
 
-  const MainMessageText(this.text) : assert(text != null);
+  const MainMessageText(this.text, {Key key})
+      : assert(text != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

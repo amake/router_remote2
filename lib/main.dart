@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         AppRoutes.home: (context) =>
-            AppScaffold(body: WifiConnection(child: VpnControlPage())),
-        AppRoutes.settings: (context) => SettingsScreen(),
+            const AppScaffold(body: WifiConnection(child: VpnControlPage())),
+        AppRoutes.settings: (context) => const SettingsScreen(),
       },
       initialRoute: AppRoutes.home,
     );
@@ -43,7 +43,9 @@ class MyApp extends StatelessWidget {
 class AppScaffold extends StatelessWidget {
   final Widget body;
 
-  const AppScaffold({@required this.body}) : assert(body != null);
+  const AppScaffold({@required this.body, Key key})
+      : assert(body != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -7,6 +7,8 @@ import 'package:router_remote2/app_settings.dart';
 import 'package:router_remote2/shared_preferences_stream.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
 class SectionHeader extends StatelessWidget {
   final String text;
 
-  const SectionHeader(this.text);
+  const SectionHeader(this.text, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +74,13 @@ class StringPrefItem extends StatefulWidget {
   final bool obscureText;
   final bool allowEmpty;
 
-  const StringPrefItem(this.prefsKey,
-      {this.title, this.obscureText = false, this.allowEmpty = false});
+  const StringPrefItem(
+    this.prefsKey, {
+    this.title,
+    this.obscureText = false,
+    this.allowEmpty = false,
+    Key key,
+  }) : super(key: key);
 
   @override
   _StringPrefItemState createState() => _StringPrefItemState();
@@ -124,7 +131,12 @@ class BoolPrefItem extends StatelessWidget {
   final String prefsKey;
   final bool defaultValue;
 
-  const BoolPrefItem(this.prefsKey, {this.title, this.defaultValue = false});
+  const BoolPrefItem(
+    this.prefsKey, {
+    this.title,
+    this.defaultValue = false,
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

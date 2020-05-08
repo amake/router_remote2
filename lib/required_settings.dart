@@ -9,7 +9,9 @@ import 'package:router_remote2/shared_preferences_bloc.dart';
 class RequiredSettings extends StatelessWidget {
   final Widget child;
 
-  const RequiredSettings({@required this.child}) : assert(child != null);
+  const RequiredSettings({@required this.child, Key key})
+      : assert(child != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,7 @@ class RequiredSettings extends StatelessWidget {
 }
 
 class SettingsRequiredPage extends StatelessWidget {
-  const SettingsRequiredPage();
+  const SettingsRequiredPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
