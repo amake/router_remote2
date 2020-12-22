@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 const bool isDebug = !kReleaseMode;
 
-class DebugBlocDelegate extends BlocDelegate {
+class DebugBlocObserver extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     if (isDebug) {
@@ -23,12 +23,12 @@ class DebugBlocDelegate extends BlocDelegate {
   }
 
   @override
-  void onError(Bloc bloc, Object error, StackTrace stackTrace) {
+  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
     if (isDebug) {
-      print('${bloc.runtimeType}: $error');
+      print('${cubit.runtimeType}: $error');
       print(stackTrace);
     }
-    super.onError(bloc, error, stackTrace);
+    super.onError(cubit, error, stackTrace);
   }
 }
 

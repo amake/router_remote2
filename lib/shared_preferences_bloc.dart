@@ -61,6 +61,8 @@ class SharedPreferencesState extends Equatable {
 
 class SharedPreferencesBloc
     extends Bloc<_SharedPreferencesEvent, SharedPreferencesState> {
+  SharedPreferencesBloc() : super(const SharedPreferencesState({}, <String>{}));
+
   final _streamSubscriptions = <String, StreamSubscription>{};
 
   void listenFor<T>(String key, {bool required = false}) {
@@ -84,10 +86,6 @@ class SharedPreferencesBloc
     }
     return super.close();
   }
-
-  @override
-  SharedPreferencesState get initialState =>
-      const SharedPreferencesState({}, <String>{});
 
   @override
   Stream<SharedPreferencesState> mapEventToState(

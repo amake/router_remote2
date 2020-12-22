@@ -46,7 +46,7 @@ class ConnectivityState extends Equatable {
 class ConnectivityBloc extends Bloc<_ConnectivityEvent, ConnectivityState> {
   StreamSubscription<ConnectivityResult> _subscription;
 
-  ConnectivityBloc() {
+  ConnectivityBloc() : super(const ConnectivityState()) {
     _subscription =
         Connectivity().onConnectivityChanged.listen(_onConnectivityChanged);
     refresh();
@@ -60,9 +60,6 @@ class ConnectivityBloc extends Bloc<_ConnectivityEvent, ConnectivityState> {
     _subscription.cancel();
     return super.close();
   }
-
-  @override
-  ConnectivityState get initialState => const ConnectivityState();
 
   @override
   Stream<ConnectivityState> mapEventToState(_ConnectivityEvent event) async* {

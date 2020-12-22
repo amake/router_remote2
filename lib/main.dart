@@ -14,7 +14,7 @@ import 'package:router_remote2/wifi_access_bloc.dart';
 import 'package:router_remote2/wifi_connection.dart';
 
 void main() {
-  BlocSupervisor.delegate = DebugBlocDelegate();
+  Bloc.observer = DebugBlocObserver();
   runApp(const MyApp());
 }
 

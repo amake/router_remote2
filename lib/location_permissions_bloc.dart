@@ -7,12 +7,9 @@ enum LocationPermissionsState { unknown, granted, denied, querying, pending }
 
 class LocationPermissionsBloc
     extends Bloc<_LocationPermissionsEvent, LocationPermissionsState> {
-  LocationPermissionsBloc() {
+  LocationPermissionsBloc() : super(LocationPermissionsState.unknown) {
     add(_LocationPermissionsEvent.init);
   }
-
-  @override
-  LocationPermissionsState get initialState => LocationPermissionsState.unknown;
 
   @override
   Stream<LocationPermissionsState> mapEventToState(

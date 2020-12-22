@@ -48,7 +48,8 @@ class VpnControlBloc extends Bloc<_VpnControlEvent, VpnControlState> {
   StreamSubscription<WifiAccessState> _wifiSubscription;
   StreamSubscription<SharedPreferencesState> _prefsSubscription;
 
-  VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc) {
+  VpnControlBloc(this.wifiBloc, this.sharedPreferencesBloc)
+      : super(VpnControlState.unknown) {
     _wifiSubscription = wifiBloc
         .listen((currentState) => add(_WifiChanged(currentState.status)));
     _prefsSubscription = sharedPreferencesBloc
@@ -129,9 +130,6 @@ class VpnControlBloc extends Bloc<_VpnControlEvent, VpnControlState> {
     _prefsSubscription.cancel();
     return super.close();
   }
-
-  @override
-  VpnControlState get initialState => VpnControlState.unknown;
 
   bool get canRefresh {
     switch (state) {
