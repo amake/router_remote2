@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 enum _LocationPermissionsEvent { init, query, checkPending }
 
@@ -21,7 +21,7 @@ class LocationPermissionsBloc
     switch (event) {
       case _LocationPermissionsEvent.init:
         yield LocationPermissionsState.querying;
-        final status = await Connectivity().getLocationServiceAuthorization();
+        final status = await WifiInfo().getLocationServiceAuthorization();
         final nextState = _nextState(status);
         // Result is `denied` on first run on Android
         // so for init return `unknown`
@@ -33,13 +33,12 @@ class LocationPermissionsBloc
         break;
       case _LocationPermissionsEvent.query:
         yield LocationPermissionsState.querying;
-        final status =
-            await Connectivity().requestLocationServiceAuthorization();
+        final status = await WifiInfo().requestLocationServiceAuthorization();
         yield _nextState(status);
         break;
       case _LocationPermissionsEvent.checkPending:
         if (state == LocationPermissionsState.pending) {
-          final status = await Connectivity().getLocationServiceAuthorization();
+          final status = await WifiInfo().getLocationServiceAuthorization();
           yield _nextState(status);
         }
         break;
@@ -56,7 +55,7 @@ class LocationPermissionsBloc
         return LocationPermissionsState.denied;
       case LocationAuthorizationStatus.authorizedAlways: // fallthrough
       case LocationAuthorizationStatus.authorizedWhenInUse:
-        Connectivity().getWifiName().then((v) => print('Wi-Fi: $v'));
+        WifiInfo().getWifiName().then((v) => print('Wi-Fi: $v'));
         return LocationPermissionsState.granted;
     }
     throw Exception('Unknown status: $status');

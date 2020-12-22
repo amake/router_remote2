@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:equatable/equatable.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 
 abstract class _ConnectivityEvent extends Equatable {
   const _ConnectivityEvent();
@@ -67,7 +68,7 @@ class ConnectivityBloc extends Bloc<_ConnectivityEvent, ConnectivityState> {
   Stream<ConnectivityState> mapEventToState(_ConnectivityEvent event) async* {
     if (event is _RefreshConnectivity) {
       yield state.copyWith(
-        wifiName: await Connectivity().getWifiName(),
+        wifiName: await WifiInfo().getWifiName(),
         connection: await Connectivity().checkConnectivity(),
         initialized: true,
       );
